@@ -1,6 +1,17 @@
 <?php 
     session_start(); 
     // session_destroy();
+
+    // INSERT
+    // $sql = "INSERT INTO `studentdetails`(`StudentNumber`, `Name`, `Bday`, `Course`, `Contact_Number`, `Email_Address`) VALUES ( 2014200123, \'Karl Divina\', \'2000-12-23\', \'BSIT\', 09682772407, \'divinakarlangelo@gmail.com\');";
+
+    // SELECT by StudentNumber
+    // $sql = "SELECT * FROM `studentdetails` WHERE StudentNumber = \'2014200123\';";
+
+    // SELECT by Email_Address
+    // $sql = "SELECT * FROM `studentdetails` WHERE Email_Address = \'divinakarlangelo@gmail.com\';";
+
+    // REGEX?!
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,6 +40,50 @@
     <?php
         $CREDENTIALS = $_SESSION['CREDENTIALS'];
 
+        $servername="localhost";
+        $username="root";
+        $password="";
+        $dbname="schooldb";
+
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        // if($conn->connect_error){
+        //     die("Connection failed: " . $conn->connect_error);
+        // } else {
+        //     $sql = "SELECT * FROM `studentdetails`;";
+        //     if($conn->query($sql) === TRUE){
+        //         $result = $conn->query($sql);
+        //         if ($result->num_rows > 0) {
+
+        //             // $CREDENTIALS = array_values($result);
+        //             // output data of each row
+        //             while($row = $result->fetch_assoc()) {
+        //                 $index = count($CREDENTIALS);
+        //                 array_push($CREDENTIALS, [
+        //                     "index" => $index,
+        //                     "name_full" => $row["Name"],
+        //                     "name_first" => $row["name_first"],
+        //                     "name_last" => $row["name_last"],
+        //                     "student_num" => $row["StudentNumber"],
+        //                     "email" => $row["Email_Address"],
+        //                     "birthday" => $row["Bday"],
+        //                     "course" => $row["Course"],
+        //                     "contact_num" => $row["Contact_Number"],
+        //                     "username" => $row["username"],
+        //                     "password" => $row["password"],
+        //                     "access" => $row["access"],
+        //                 ]);
+        //             }
+        //         } else {
+        //             echo "0 results";
+        //         }
+        //     } else {
+        //         echo("Error: " . $sql . "<br>" . $conn->error);
+        //     }
+
+        //     $conn->close();
+        // }
+
         function printRegister(){
             ?>
             <div class="row">
@@ -56,6 +111,46 @@
                                             type="text"
                                             class="form-control form-rounded"
                                             name="name_last"
+                                        />
+                                    </p>
+                                    <p>
+                                        Student Number: 
+                                        <input
+                                            type="text"
+                                            class="form-control form-rounded"
+                                            name="student_num"
+                                        />
+                                    </p>
+                                    <p>
+                                        Email Address: 
+                                        <input
+                                            type="email"
+                                            class="form-control form-rounded"
+                                            name="email"
+                                        />
+                                    </p>
+                                    <p>
+                                        Date of Birth: 
+                                        <input
+                                            type="date"
+                                            class="form-control form-rounded"
+                                            name="birthday"
+                                        />
+                                    </p>
+                                    <p>
+                                        Course: 
+                                        <input
+                                            type="text"
+                                            class="form-control form-rounded"
+                                            name="course"
+                                        />
+                                    </p>
+                                    <p>
+                                        Contact Number: 
+                                        <input
+                                            type="text"
+                                            class="form-control form-rounded"
+                                            name="contact_num"
                                         />
                                     </p>
                                     <p>
@@ -131,6 +226,46 @@
                                         />
                                     </p>
                                     <p>
+                                        Student Number: 
+                                        <input
+                                            type="text"
+                                            class="form-control form-rounded"
+                                            name="student_num"
+                                        />
+                                    </p>
+                                    <p>
+                                        Email Address: 
+                                        <input
+                                            type="email"
+                                            class="form-control form-rounded"
+                                            name="email"
+                                        />
+                                    </p>
+                                    <p>
+                                        Date of Birth: 
+                                        <input
+                                            type="date"
+                                            class="form-control form-rounded"
+                                            name="birthday"
+                                        />
+                                    </p>
+                                    <p>
+                                        Course: 
+                                        <input
+                                            type="text"
+                                            class="form-control form-rounded"
+                                            name="course"
+                                        />
+                                    </p>
+                                    <p>
+                                        Contact Number: 
+                                        <input
+                                            type="text"
+                                            class="form-control form-rounded"
+                                            name="contact_num"
+                                        />
+                                    </p>
+                                    <p>
                                         Username: 
                                         <input
                                             type="text"
@@ -179,27 +314,72 @@
                 $providedFirstName = $_POST['name_first'];
                 $providedLastName = $_POST['name_last'];
                 $providedFullName = $providedFirstName . " " . $providedLastName;
+                $providedStudentNumber = $_POST['student_num'];
+                $providedEmail = $_POST['email'];
+                $providedBirthday = $_POST['birthday'];
+                $providedCourse = $_POST['course'];
+                $providedContactNumber = $_POST['contact_num'];
                 $providedUsername = $_POST['username'];
                 $providedPassword = $_POST['password'];
 
+                $studentDetails = array(
+                    "name_first" => $providedFirstName,
+                    "name_last" => $providedEmail,
+                    "name_full" => $providedFullName,
+                    "student_num" => $providedStudentNumber,
+                    "email" => $providedEmail,
+                    "birthday" => $providedBirthday,
+                    "course" => $providedCourse,
+                    "contact_num" => $providedContactNumber,
+                    "username" => $providedUsername,
+                    "password" => $providedPassword,
+                    "access" => "MEMBER",
+                );
+
                 if(!$error = checkDetails($providedFirstName, $providedLastName, $providedUsername, $providedPassword)){
                     if($error = checkUser($CREDENTIALS, $providedUsername)){
-                        echo("user is valid");
+                        // echo("user is valid");
                         $index = count($CREDENTIALS);
-                        array_push($CREDENTIALS, [
-                                "index" => $index,
-                                "name_full" => $providedFullName,
-                                "name_first" => $providedFirstName,
-                                "name_last" => $providedLastName,
-                                "username" => $providedUsername,
-                                "password" => $providedPassword,
-                                "access" => "MEMBER",
-                                ]
-                            
-                        );
+                        // INSERT HERE
+
+                        if($conn->connect_error){
+                            die("Connection failed: " . $conn->connect_error);
+                        } else {
+                            $sql = "INSERT INTO studentdetails(StudentNumber, Name, Bday, Course, Contact_Number, Email_Address, username, password, name_first, name_last, access) VALUES (
+                                '$providedStudentNumber', 
+                                '$providedFullName', 
+                                '$providedBirthday', 
+                                '$providedCourse', 
+                                '$providedContactNumber', 
+                                '$providedEmail',
+                                '$providedUsername',
+                                '$providedPassword',
+                                '$providedFirstName',
+                                '$providedLastName',
+                                'MEMBER'
+                            );";
+                            if($conn->query($sql) === TRUE){
+                                // echo("New record created successfully");
+                            } else {
+                                echo("Error: " . $sql . "<br>" . $conn->error);
+                            }
+
+                            $conn->close();
+                        }
+                        // array_push($CREDENTIALS, [
+                        //         "index" => $index,
+                        //         "name_full" => $providedFullName,
+                        //         "name_first" => $providedFirstName,
+                        //         "name_last" => $providedLastName,
+                        //         "username" => $providedUsername,
+                        //         "password" => $providedPassword,
+                        //         "access" => "MEMBER",
+                        //         ]  
+                        // );
                         $_SESSION['CREDENTIALS'] = $CREDENTIALS;
-                        echo("user added");
+                        echo("User registered succesfully!");
                         if(!$error = checkUser($_SESSION['CREDENTIALS'], $providedUsername)){
+                            // LOGIN HERE
                             if(!$error = loginUser($providedUsername, $providedPassword)){
                                 echo("user logged in");
                                 $_SESSION['CREDENTIALS'] = $CREDENTIALS;

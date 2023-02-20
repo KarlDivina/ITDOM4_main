@@ -8,27 +8,56 @@
     );
 
     if (!isset($_SESSION['CREDENTIALS'])){
-        $_SESSION['CREDENTIALS'] = array(
-            0 => [
-                "index" => 0,
-                "name_full" => "Test Admin",
-                "name_first" => "Test",
-                "name_last" => "Admin",
-                "username" => "testadmin",
-                "password" => "adminpass",
-                "access" => "ADMIN",
-            ],
-            1 => [
-                "index" => 1,
-                "name_full" => "Test Member",
-                "name_first" => "Test",
-                "name_last" => "Member",
-                "username" => "testmember",
-                "password" => "memberpass",
-                "access" => "MEMBER",
-            ],
-        );
-    } 
+        $servername="localhost";
+        $username="root";
+        $password="";
+        $dbname="schooldb";
+        $CREDENTIALS=array();
+
+
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        if($conn->connect_error){
+            die("Connection failed: " . $conn->connect_error);
+        } else {
+            $sql = "SELECT * FROM 'studentdetails';";
+            if($conn->query($sql) === TRUE){
+                $result = $conn->query($sql);
+                if ($result->num_rows > 0) {
+
+                    // output data of each row
+                    while($row = $result->fetch_assoc()) {
+                        $index = count($CREDENTIALS);
+                        array_push($CREDENTIALS, [
+                            "index" => $index,
+                            "name_full" => $row["Name"],
+                            "name_first" => $row["name_first"],
+                            "name_last" => $row["name_last"],
+                            "student_num" => $row["StudentNumber"],
+                            "email" => $row["Email_Address"],
+                            "birthday" => $row["Bday"],
+                            "course" => $row["Course"],
+                            "contact_num" => $row["Contact_Number"],
+                            "username" => $row["username"],
+                            "password" => $row["password"],
+                            "access" => $row["access"],
+                        ]);
+                    }
+                } else {
+                    echo "0 results";
+                }
+            } else {
+                echo("Error: " . $sql . "<br>" . $conn->error);
+            }
+
+            $conn->close();
+        }
+
+        $_SESSION['CREDENTIALS'] = $CREDENTIALS;
+    } else {
+        $_SESSION['CREDENTIALS'] = array();
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
