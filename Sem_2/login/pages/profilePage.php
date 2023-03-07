@@ -1,70 +1,5 @@
 <?php 
     session_start();
-
-    $_SESSION['FUNCTIONS'] = array(
-        "F4" => "login_user",
-        "F5" => "logout_user",
-        "F6" => "register_user",
-    );
-
-    if (!isset($_SESSION['CREDENTIALS'])){
-        $_SESSION['CREDENTIALS'] = array();
-    } else {
-        $servername="localhost";
-        $username="root";
-        $password="";
-        $dbname="schooldb";
-        $CREDENTIALS=array();
-
-
-        $conn = new mysqli($servername, $username, $password, $dbname);
-
-        if($conn->connect_error){
-            die("Connection failed: " . $conn->connect_error);
-        } else {
-            $sql = "SELECT * FROM 'studentdetails';";
-            if($conn->query($sql) === TRUE){
-                $result = $conn->query($sql);
-                if ($result->num_rows > 0) {
-
-                    // output data of each row
-                    while($row = $result->fetch_assoc()) {
-                        $index = count($CREDENTIALS);
-                        array_push($CREDENTIALS, [
-                            "index" => $index,
-                            "name_full" => $row["Name"],
-                            "name_first" => $row["name_first"],
-                            "name_last" => $row["name_last"],
-                            "student_num" => $row["StudentNumber"],
-                            "email" => $row["Email_Address"],
-                            "birthday" => $row["Bday"],
-                            "course" => $row["Course"],
-                            "contact_num" => $row["Contact_Number"],
-                            "username" => $row["username"],
-                            "password" => $row["password"],
-                            "access" => $row["access"],
-                            "profilePicture" => $row["profilePicture"],
-                        ]);
-                    }
-                } else {
-                    echo "0 results";
-                }
-            } else {
-                echo("Error: " . $sql . "<br>" . $conn->error);
-            }
-
-            $conn->close();
-        }
-
-        $_SESSION['CREDENTIALS'] = $CREDENTIALS;
-    }
-
-    // if (!isset($_SESSION['CREDENTIALS'])){
-    //     $_SESSION['CREDENTIALS'] = array();
-    // } else {
-    //     $CREDENTIALS = $_SESSION['CREDENTIALS'];
-    // }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,7 +7,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karl D</title>
+    <title>Karl D : User</title>
     <link rel="icon" type="image/x-icon" href="../assets/logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
     <link rel="stylesheet" href="login.css">
@@ -180,9 +115,6 @@
                             </form>
                             <li class=\""."nav-item\"".">
                                 <a class=\""." nav-link disabled active\""." aria-current=\""."page\""." style=\""."color: white;\""."> Welcome, ". $_SESSION['FULLNAME'] ."</a>
-                            </li>
-                            <li class=\""."nav-item\"".">
-                                <a class=\""." nav-link "." href=\""."profilePage.php\""." active\""." aria-current=\""."page\""." style=\""."color: white;\"".">". $_SESSION['profilePicture'] ."</a>
                             </li>
                         ");
                     }

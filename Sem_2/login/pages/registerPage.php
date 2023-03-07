@@ -40,50 +40,6 @@
     <?php
         $CREDENTIALS = $_SESSION['CREDENTIALS'];
 
-        $servername="localhost";
-        $username="root";
-        $password="";
-        $dbname="schooldb";
-
-        $conn = new mysqli($servername, $username, $password, $dbname);
-
-        // if($conn->connect_error){
-        //     die("Connection failed: " . $conn->connect_error);
-        // } else {
-        //     $sql = "SELECT * FROM `studentdetails`;";
-        //     if($conn->query($sql) === TRUE){
-        //         $result = $conn->query($sql);
-        //         if ($result->num_rows > 0) {
-
-        //             // $CREDENTIALS = array_values($result);
-        //             // output data of each row
-        //             while($row = $result->fetch_assoc()) {
-        //                 $index = count($CREDENTIALS);
-        //                 array_push($CREDENTIALS, [
-        //                     "index" => $index,
-        //                     "name_full" => $row["Name"],
-        //                     "name_first" => $row["name_first"],
-        //                     "name_last" => $row["name_last"],
-        //                     "student_num" => $row["StudentNumber"],
-        //                     "email" => $row["Email_Address"],
-        //                     "birthday" => $row["Bday"],
-        //                     "course" => $row["Course"],
-        //                     "contact_num" => $row["Contact_Number"],
-        //                     "username" => $row["username"],
-        //                     "password" => $row["password"],
-        //                     "access" => $row["access"],
-        //                 ]);
-        //             }
-        //         } else {
-        //             echo "0 results";
-        //         }
-        //     } else {
-        //         echo("Error: " . $sql . "<br>" . $conn->error);
-        //     }
-
-        //     $conn->close();
-        // }
-
         function printRegister(){
             ?>
             <div class="row">
@@ -96,6 +52,7 @@
                                 <form
                                     method="post"
                                     action="registerPage.php"
+                                    enctype="multipart/form-data"
                                 >
                                     <p>
                                         First Name: 
@@ -151,6 +108,14 @@
                                             type="text"
                                             class="form-control form-rounded"
                                             name="contact_num"
+                                        />
+                                    </p>
+                                    <p>
+                                        Profile Picture: 
+                                        <input 
+                                            type="file" 
+                                            class="form-control form-rounded"
+                                            name="image" 
                                         />
                                     </p>
                                     <p>
@@ -322,70 +287,86 @@
                 $providedUsername = $_POST['username'];
                 $providedPassword = $_POST['password'];
 
-                $studentDetails = array(
-                    "name_first" => $providedFirstName,
-                    "name_last" => $providedEmail,
-                    "name_full" => $providedFullName,
-                    "student_num" => $providedStudentNumber,
-                    "email" => $providedEmail,
-                    "birthday" => $providedBirthday,
-                    "course" => $providedCourse,
-                    "contact_num" => $providedContactNumber,
-                    "username" => $providedUsername,
-                    "password" => $providedPassword,
-                    "access" => "MEMBER",
-                );
-
                 if(!$error = checkDetails($providedFirstName, $providedLastName, $providedUsername, $providedPassword)){
                     if($error = checkUser($CREDENTIALS, $providedUsername)){
                         // echo("user is valid");
                         $index = count($CREDENTIALS);
-                        // INSERT HERE
+                        $servername="localhost";
+                        $username="root";
+                        $password="";
+                        $dbname="schooldb";
+
+                        $conn = new mysqli($servername, $username, $password, $dbname);
 
                         if($conn->connect_error){
                             die("Connection failed: " . $conn->connect_error);
                         } else {
-                            $sql = "INSERT INTO studentdetails(StudentNumber, Name, Bday, Course, Contact_Number, Email_Address, username, password, name_first, name_last, access) VALUES (
-                                '$providedStudentNumber', 
-                                '$providedFullName', 
-                                '$providedBirthday', 
-                                '$providedCourse', 
-                                '$providedContactNumber', 
-                                '$providedEmail',
-                                '$providedUsername',
-                                '$providedPassword',
-                                '$providedFirstName',
-                                '$providedLastName',
-                                'MEMBER'
-                            );";
-                            if($conn->query($sql) === TRUE){
-                                // echo("New record created successfully");
+                            $target_dir = "../assets/";
+                            $target_file = $target_dir . basename($_FILES["image"]["name"]);
+                            $uploadOk = 1;
+                            $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+                            $check = getimagesize($_FILES["image"]["tmp_name"]);
+                            if($check == false && 
+                            $_FILES["image"]["size"] > 500000 && 
+                            $imageFileType != "jpg" && 
+                            $imageFileType != "png" && 
+                            $imageFileType != "jpeg" && 
+                            $imageFileType != "gif") {
+                                $uploadOk = 0;
                             } else {
-                                echo("Error: " . $sql . "<br>" . $conn->error);
+                                // echo "File is an image - " . $check["mime"] . ".";
+                                $uploadOk = 1;
                             }
-
-                            $conn->close();
-                        }
-                        // array_push($CREDENTIALS, [
-                        //         "index" => $index,
-                        //         "name_full" => $providedFullName,
-                        //         "name_first" => $providedFirstName,
-                        //         "name_last" => $providedLastName,
-                        //         "username" => $providedUsername,
-                        //         "password" => $providedPassword,
-                        //         "access" => "MEMBER",
-                        //         ]  
-                        // );
-                        $_SESSION['CREDENTIALS'] = $CREDENTIALS;
-                        echo("User registered succesfully!");
-                        if(!$error = checkUser($_SESSION['CREDENTIALS'], $providedUsername)){
-                            // LOGIN HERE
-                            if(!$error = loginUser($providedUsername, $providedPassword)){
-                                echo("user logged in");
-                                $_SESSION['CREDENTIALS'] = $CREDENTIALS;
-                                ?> <meta http-equiv="refresh" content="0;url=http://localhost/ITDOM2/Sem_2/login/pages/homePage.php"> <?php
+                            if ($uploadOk == 0) {
+                                echo "Sorry, your file was not uploaded.";
                             } else {
-                                printError();
+                                if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                                    $providedImage = ("../assets/".$_FILES["image"]["name"]);
+                                    $sql = "INSERT INTO studentdetails(
+                                    StudentNumber, 
+                                    Name, 
+                                    Bday, 
+                                    Course, 
+                                    Contact_Number, 
+                                    Email_Address, 
+                                    username, 
+                                    password, 
+                                    name_first, 
+                                    name_last, 
+                                    access, 
+                                    profilePicture
+                                    ) VALUES (
+                                        '$providedStudentNumber', 
+                                        '$providedFullName', 
+                                        '$providedBirthday', 
+                                        '$providedCourse', 
+                                        '$providedContactNumber', 
+                                        '$providedEmail',
+                                        '$providedUsername',
+                                        '$providedPassword',
+                                        '$providedFirstName',
+                                        '$providedLastName',
+                                        'MEMBER',
+                                        '$providedImage'
+                                    );";
+                                    if($conn->query($sql) === TRUE){
+                                        $conn->close();
+                                        // record inserted
+                                        echo("User registered succesfully!");
+                                        if(!$error = checkUser($_SESSION['CREDENTIALS'], $providedUsername)){
+                                            // LOGIN HERE
+                                            if(!$error = loginUser($providedUsername, $providedPassword)){
+                                                echo("user logged in");
+                                                $_SESSION['CREDENTIALS'] = $CREDENTIALS;
+                                                ?> <meta http-equiv="refresh" content="0;url=http://localhost/ITDOM4/Sem_2/login/pages/homePage.php"> <?php
+                                            } else {
+                                                printError();
+                                            }
+                                        }
+                                    } else {
+                                        echo("Error: " . $sql . "<br>" . $conn->error);
+                                    }
+                                }
                             }
                         }
                     }

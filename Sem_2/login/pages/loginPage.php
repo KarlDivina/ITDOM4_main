@@ -136,7 +136,7 @@
                 if(!$error){
                     $error = loginUser($providedUsername, $providedPassword);
                     if(!$error){
-                        ?> <meta http-equiv="refresh" content="0;url=http://localhost/ITDOM2/Sem_2/login/pages/homePage.php"> <?php
+                        ?> <meta http-equiv="refresh" content="0;url=http://localhost/ITDOM4/Sem_2/login/pages/homePage.php"> <?php
                     } else {
                         printError();
                     }
