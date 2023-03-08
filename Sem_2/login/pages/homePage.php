@@ -5,6 +5,7 @@
         "F4" => "login_user",
         "F5" => "logout_user",
         "F6" => "register_user",
+        "F7" => "check_user",
     );
 
     if (!isset($_SESSION['CREDENTIALS'])){
@@ -81,13 +82,59 @@
     </div>
     <section class="items">
         <?php
-
             if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 if (empty($_POST[$_SESSION['FUNCTIONS']["F5"]])){ //order is complete?
                 } else {
                     logoutUser();
                 }
-            } 
+            } else {
+                printUsers();
+            }
+
+            function printUsers(){
+                $servername="localhost";
+                $username="root";
+                $password="";
+                $dbname="schooldb";
+
+                $conn = new mysqli($servername, $username, $password, $dbname);
+                $sql = "SELECT * FROM studentdetails;"; 
+
+                $result = mysqli_query($conn, $sql);
+                if (!$result) {
+                    die("Query failed: " . mysqli_error($conn));
+                    echo("QUERY: " . $sql ."<br> query end <br>");
+                    echo("ERROR: " . $conn->error ."<br> error end <br>");
+                } else {
+                    echo("<table>
+                    <tr>
+                        <th scope='col'>  Profile Picture</th>
+                        <th scope='col'>  Student Number </th>
+                        <th scope='col'>  Name </th>
+                        <th scope='col'>  Course </th>
+                    </tr>");
+                        for($x = 0; $x < $result->num_rows; $x++){
+                            while ($row = mysqli_fetch_assoc($result)){
+                                echo("<tr>
+                                    <th scope='row'>  
+                                        <form
+                                            method=\"post\"
+                                            action=\"profilePage.php\"
+                                        >
+                                                <input type='hidden' name=\"check_user\" value=\"".$row['StudentNumber']."\"/>
+                                                <input type='image' class=\"profilePicture\" src=\"".$row['profilePicture']."\" style=\"width: 5vw; border-style: none; border-radius: 50px;\"/>
+                                        </form> 
+                                    </th>
+                                    <td> ".$row['StudentNumber']." </td>
+                                    <td> ".$row['Name']." </td>
+                                    <td> ".$row['Course']." </td>
+                                </tr>");
+                        }
+                    }
+                }
+                echo("</table>");
+                $conn->close();
+            }
 
             function logoutUser(){
                 unset($_SESSION['CREDENTIALS']);
@@ -131,10 +178,15 @@
                             </form>
                             <li class=\""."nav-item\"".">
                                 <a class=\""."nav-link disabled active\""." aria-current=\""."page\""." style=\""."color: white;\""."> Welcome, ". $CREDENTIALS['firstname'] ."</a>
-                            </li>
-                            <li class=\""."nav-item\"".">
-                                <img class=\"profilePicture\" src=\"".$CREDENTIALS['picture']."\"/>"."
-                            </li>
+                            <form
+                                method=\""."post\""."
+                                action=\""."profilePage.php\""."
+                            >
+                                </li>
+                                    <input type='hidden' name=\""."check_user\""." value=\"".$CREDENTIALS['number']."\""."/>
+                                    <input type='image' class=\""."profilePicture\""." src=\"".$CREDENTIALS['picture']."\" style=\""."width: 5vw; border-style: none; border-radius: 50px;\""."/>"."
+                                </li>
+                            </form>
                         ");
                     }
                 }
@@ -148,7 +200,3 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
 </body>
 </html>
-
-<!-- <li class=\""."nav-item\"".">
-    <a class=\""."nav-link\""." href=\""."profilePage.php\""." active\""." aria-current=\""."page\""." style=\""."color: white;\"".">"."<img class=\"profilePicture\" src=\"".$CREDENTIALS['picture']."\"/>"."</a>
-</li> -->

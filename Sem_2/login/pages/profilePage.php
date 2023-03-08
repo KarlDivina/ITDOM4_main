@@ -30,8 +30,8 @@
                                     <a class="nav-link btn btn-outline-light" aria-current="page" href="homePage.php" style="color: white; margin-right: 5px;">Home</a>
                                 </li>
                                 <?php
-                                    if(isset($_SESSION["ACCESS"])){
-                                        checkAccess();
+                                    if(!empty($_SESSION['CREDENTIALS'])){
+                                        checkAccess($_SESSION['CREDENTIALS']);
                                     } else {
                                         echo ("
                                             <li class=\""."nav-item\"".">
@@ -70,22 +70,57 @@
         <?php
 
             if ($_SERVER["REQUEST_METHOD"] == "POST"){
-                if (empty($_POST[$_SESSION['FUNCTIONS']["F5"]])){ //order is complete?
+                if (isset($_POST["check_user"]) != 1){ //order is complete?
+                    if (empty($_POST[$_SESSION['FUNCTIONS']["F5"]])){ //order is complete?
+                    } else {
+                        logoutUser();
+                    }
                 } else {
-                    logoutUser();
+                    checkUser();
                 }
             } 
 
+            function checkUser(){
+                $servername="localhost";
+                $username="root";
+                $password="";
+                $dbname="schooldb";
+
+                $conn = new mysqli($servername, $username, $password, $dbname);
+                $number = $_POST["check_user"];
+                $sql = "SELECT * FROM studentdetails WHERE StudentNumber = '$number'"; 
+
+                $result = mysqli_query($conn, $sql);
+                if (!$result) {
+                    die("Query failed: " . mysqli_error($conn));
+                    echo("QUERY: " . $sql ."<br> query end <br>");
+                    echo("ERROR: " . $conn->error ."<br> error end <br>");
+                    echo("NUMBER: " . $number ."<br> pass end <br>");
+                } else {
+                    while ($row = mysqli_fetch_assoc($result)){
+                        echo("<tr>");
+                        echo("<td> <img class=\""."profilePicture\""." src=\"".$row['profilePicture']."\" style=\""."width: 10vw; border-style: none; border-radius: 25px; align-self: center;\""."/> </td> ");
+                        echo("<td> Student Number: ". $row['StudentNumber'] ."<br> </td> ");
+                        echo("<td> Full Name: ". $row['Name'] ."<br> </td> ");
+                        echo("<td> Course: ". $row['Course'] ."<br> </td> ");
+                        echo("<td> Email: ". $row['Email_Address'] ."<br> </td> ");
+                        echo("<td> Contact Number: ". $row['Contact_Number'] ."<br> </td> ");
+                        echo("</tr>");
+                        $conn->close();
+                    }
+                }
+            }
+
             function logoutUser(){
-                unset($_SESSION["ACCESS"]);
-                unset($_SESSION["FULLNAME"]);
+                unset($_SESSION['CREDENTIALS']);
+                unset($CREDENTIALS);
                 
                 reloadPage();
             }
             
-            function checkAccess(){
-                if(isset($_SESSION['ACCESS'])){
-                    $userAccess = $_SESSION['ACCESS'];
+            function checkAccess($CREDENTIALS){
+                if(isset($CREDENTIALS['access'])){
+                    $userAccess = $CREDENTIALS['access'];
                     if($userAccess == "SUPER"){
                     } else if($userAccess == "ADMIN"){
                         echo ("
@@ -100,7 +135,10 @@
                         ");
                         echo ("
                             <li class=\""."nav-item\"".">
-                                <a class=\""." nav-link disabled active\""." aria-current=\""."page\""." style=\""."color: white;\""."> Welcome, ". $_SESSION['FULLNAME'] ."</a>
+                                <a class=\""."nav-link disabled active\""." aria-current=\""."page\""." style=\""."color: white;\""."> Welcome, ". $CREDENTIALS['firstname'] ."</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <img class=\"profilePicture\" src=\"".$CREDENTIALS['picture']."\"/>"."
                             </li>
                         ");
                     } else if($userAccess == "MEMBER"){
@@ -114,8 +152,16 @@
                                 </li>
                             </form>
                             <li class=\""."nav-item\"".">
-                                <a class=\""." nav-link disabled active\""." aria-current=\""."page\""." style=\""."color: white;\""."> Welcome, ". $_SESSION['FULLNAME'] ."</a>
-                            </li>
+                                <a class=\""."nav-link disabled active\""." aria-current=\""."page\""." style=\""."color: white;\""."> Welcome, ". $CREDENTIALS['firstname'] ."</a>
+                            <form
+                                method=\""."post\""."
+                                action=\""."profilePage.php\""."
+                            >
+                                </li>
+                                    <input type='hidden' value=\"".$CREDENTIALS['number']."\""."/>
+                                    <input type='image' class=\""."profilePicture\""." src=\"".$CREDENTIALS['picture']."\" style=\""."width: 5vw; border-style: none; border-radius: 50px;\""."/>"."
+                                </li>
+                            </form>
                         ");
                     }
                 }
@@ -124,6 +170,8 @@
             function reloadPage(){
                 echo("<meta http-equiv='refresh' content='1'>");
             }
+
+
         ?>
     </section>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
