@@ -5,6 +5,10 @@
     box-sizing: border-box;
 }
 
+img.profilePicture {
+    width: 5vw;
+}
+
 .header-text{
     display: flex;
     justify-content: center;

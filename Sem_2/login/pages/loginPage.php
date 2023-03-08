@@ -26,8 +26,6 @@
     </div>
 
     <?php
-        $CREDENTIALS = $_SESSION['CREDENTIALS'];
-
         function printLogin(){
             ?>
             <div class="row">
@@ -130,16 +128,9 @@
             } else {
                 $providedUsername = $_POST['username'];
                 $providedPassword = $_POST['password'];
-                
-                $error = checkUser($CREDENTIALS, $providedUsername);
 
-                if(!$error){
-                    $error = loginUser($providedUsername, $providedPassword);
-                    if(!$error){
-                        ?> <meta http-equiv="refresh" content="0;url=http://localhost/ITDOM4/Sem_2/login/pages/homePage.php"> <?php
-                    } else {
-                        printError();
-                    }
+                if(!$error = checkUser($providedUsername, $providedPassword)){
+                    ?> <meta http-equiv="refresh" content="0;url=http://localhost/ITDOM4/Sem_2/login/pages/homePage.php"> <?php
                 } else {
                     printError();
                 }
@@ -148,12 +139,43 @@
             printLogin();
         } 
 
-        function checkUser($CREDENTIALS, $user){
-            foreach ($CREDENTIALS as $user => $userDetails){
-                if(in_array($_POST['username'], $CREDENTIALS[$user], false)){
-                    $_SESSION["USER_DETAILS"] = $userDetails;
-                    return(False);
-                } 
+        function checkUser($user, $pass){
+            $servername="localhost";
+            $username="root";
+            $password="";
+            $dbname="schooldb";
+
+            $conn = new mysqli($servername, $username, $password, $dbname);
+            $sql = "SELECT * FROM studentdetails WHERE username = '$user'"; 
+
+            $result = mysqli_query($conn, $sql);
+            if (!$result) {
+                die("Query failed: " . mysqli_error($conn));
+                echo("QUERY: " . $sql ."<br> query end <br>");
+                echo("ERROR: " . $conn->error ."<br> error end <br>");
+                echo("USERNAME: " . $user ."<br> user end <br>");
+                echo("PASSWORD: " . $pass ."<br> pass end <br>");
+            } else {
+                while ($row = mysqli_fetch_assoc($result)){
+                    if($user == $row['username'] && $pass == $row['password']){
+                        echo("LOGIN VALID");
+                        $CREDENTIALS = array(
+                            "number" => $row['StudentNumber'], 
+                            "username" => $row['username'], 
+                            "firstname" => $row['name_first'], 
+                            "lastname" => $row['name_last'],
+                            "picture" => $row['profilePicture'],
+                            "access" => $row['access']
+                        );
+                        $_SESSION['CREDENTIALS'] = $CREDENTIALS;
+                        $conn->close();
+                        return(False);
+                    } else {
+                        $conn->close();
+                        return(True);
+                    }
+                }
+                $conn->close();
             }
             return(True);
         }

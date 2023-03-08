@@ -352,16 +352,22 @@
                                     if($conn->query($sql) === TRUE){
                                         $conn->close();
                                         // record inserted
-                                        echo("User registered succesfully!");
-                                        if(!$error = checkUser($_SESSION['CREDENTIALS'], $providedUsername)){
-                                            // LOGIN HERE
-                                            if(!$error = loginUser($providedUsername, $providedPassword)){
-                                                echo("user logged in");
-                                                $_SESSION['CREDENTIALS'] = $CREDENTIALS;
-                                                ?> <meta http-equiv="refresh" content="0;url=http://localhost/ITDOM4/Sem_2/login/pages/homePage.php"> <?php
-                                            } else {
-                                                printError();
-                                            }
+                                        // echo("User registered succesfully!");
+                                        // $_SESSION["USERNAME"] = $providedUsername;
+                                        // $_SESSION["FNAME"] = $providedFirstName;
+                                        // $_SESSION["LNAME"] = $providedLastName;
+                                        $CREDS = array(
+                                            "number" => "$providedStudentNumber", 
+                                            "username" => "$providedUsername", 
+                                            "firstname" => "$providedFirstName", 
+                                            "lastname" => "$providedLastName",
+                                            "picture" => "$providedImage",
+                                            "access" => "MEMBER"
+                                        );
+                                        if(!$error = checkUser($CREDS, $providedPassword)){
+                                            // echo("user logged in");
+                                            $_SESSION['CREDENTIALS'] = $CREDS;
+                                            ?> <meta http-equiv="refresh" content="0;url=http://localhost/ITDOM4/Sem_2/login/pages/homePage.php"> <?php
                                         }
                                     } else {
                                         echo("Error: " . $sql . "<br>" . $conn->error);
@@ -408,12 +414,37 @@
             return(True);
         }
 
-        function checkUser($CREDENTIALS, $username){
-            foreach ($CREDENTIALS as $user => $userDetails){
-                if(in_array($username, $CREDENTIALS[$user], false)){
-                    $_SESSION["USER_DETAILS"] = $userDetails;
-                    return(False);
-                } 
+        function checkUser($CREDS, $pass){
+            $servername="localhost";
+            $username="root";
+            $password="";
+            $dbname="schooldb";
+
+            $conn = new mysqli($servername, $username, $password, $dbname);
+
+            $number = $CREDS['number'];
+
+            if($conn->connect_error){
+                die("Connection failed: " . $conn->connect_error);
+            } else {
+                $sql = "SELECT * FROM studentdetails WHERE StudentNumber=$number;";
+                if($conn->query($sql) === TRUE){
+                    $result = $conn->query($sql);
+                    if ($result->num_rows > 0) {
+                        while($row = $result->fetch_assoc()) {
+                            if($CREDS['username'] == $row['username'] && $pass == $row['password']){
+                                $conn->close();
+                                return(False);
+                            }
+                        }
+                    } else {
+                        $conn->close();
+                        return(True);
+                    }
+                } else {
+                    echo("Error: " . $sql . "<br>" . $conn->error);
+                }
+                $conn->close();
             }
             return(True);
         }

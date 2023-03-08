@@ -10,60 +10,8 @@
     if (!isset($_SESSION['CREDENTIALS'])){
         $_SESSION['CREDENTIALS'] = array();
     } else {
-        $servername="localhost";
-        $username="root";
-        $password="";
-        $dbname="schooldb";
-        $CREDENTIALS=array();
-
-
-        $conn = new mysqli($servername, $username, $password, $dbname);
-
-        if($conn->connect_error){
-            die("Connection failed: " . $conn->connect_error);
-        } else {
-            $sql = "SELECT * FROM 'studentdetails';";
-            if($conn->query($sql) === TRUE){
-                $result = $conn->query($sql);
-                if ($result->num_rows > 0) {
-
-                    // output data of each row
-                    while($row = $result->fetch_assoc()) {
-                        $index = count($CREDENTIALS);
-                        array_push($CREDENTIALS, [
-                            "index" => $index,
-                            "name_full" => $row["Name"],
-                            "name_first" => $row["name_first"],
-                            "name_last" => $row["name_last"],
-                            "student_num" => $row["StudentNumber"],
-                            "email" => $row["Email_Address"],
-                            "birthday" => $row["Bday"],
-                            "course" => $row["Course"],
-                            "contact_num" => $row["Contact_Number"],
-                            "username" => $row["username"],
-                            "password" => $row["password"],
-                            "access" => $row["access"],
-                            "profilePicture" => $row["profilePicture"],
-                        ]);
-                    }
-                } else {
-                    echo "0 results";
-                }
-            } else {
-                echo("Error: " . $sql . "<br>" . $conn->error);
-            }
-
-            $conn->close();
-        }
-
-        $_SESSION['CREDENTIALS'] = $CREDENTIALS;
+        $CREDENTIALS = $_SESSION['CREDENTIALS'];
     }
-
-    // if (!isset($_SESSION['CREDENTIALS'])){
-    //     $_SESSION['CREDENTIALS'] = array();
-    // } else {
-    //     $CREDENTIALS = $_SESSION['CREDENTIALS'];
-    // }
 
 ?>
 <!DOCTYPE html>
@@ -75,7 +23,7 @@
     <title>Karl D</title>
     <link rel="icon" type="image/x-icon" href="../assets/logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="./login.css">
 </head>
 <body class="container-fluid">
     <div class="row">
@@ -95,8 +43,8 @@
                                     <a class="nav-link btn btn-outline-light" aria-current="page" href="homePage.php" style="color: white; margin-right: 5px;">Home</a>
                                 </li>
                                 <?php
-                                    if(isset($_SESSION["ACCESS"])){
-                                        checkAccess();
+                                    if(!empty($_SESSION['CREDENTIALS'])){
+                                        checkAccess($CREDENTIALS);
                                     } else {
                                         echo ("
                                             <li class=\""."nav-item\"".">
@@ -142,15 +90,15 @@
             } 
 
             function logoutUser(){
-                unset($_SESSION["ACCESS"]);
-                unset($_SESSION["FULLNAME"]);
+                unset($_SESSION['CREDENTIALS']);
+                unset($CREDENTIALS);
                 
                 reloadPage();
             }
             
-            function checkAccess(){
-                if(isset($_SESSION['ACCESS'])){
-                    $userAccess = $_SESSION['ACCESS'];
+            function checkAccess($CREDENTIALS){
+                if(isset($CREDENTIALS['access'])){
+                    $userAccess = $CREDENTIALS['access'];
                     if($userAccess == "SUPER"){
                     } else if($userAccess == "ADMIN"){
                         echo ("
@@ -165,7 +113,10 @@
                         ");
                         echo ("
                             <li class=\""."nav-item\"".">
-                                <a class=\""." nav-link disabled active\""." aria-current=\""."page\""." style=\""."color: white;\""."> Welcome, ". $_SESSION['FULLNAME'] ."</a>
+                                <a class=\""."nav-link disabled active\""." aria-current=\""."page\""." style=\""."color: white;\""."> Welcome, ". $CREDENTIALS['firstname'] ."</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <img class=\"profilePicture\" src=\"".$CREDENTIALS['picture']."\"/>"."
                             </li>
                         ");
                     } else if($userAccess == "MEMBER"){
@@ -179,10 +130,10 @@
                                 </li>
                             </form>
                             <li class=\""."nav-item\"".">
-                                <a class=\""." nav-link disabled active\""." aria-current=\""."page\""." style=\""."color: white;\""."> Welcome, ". $_SESSION['FULLNAME'] ."</a>
+                                <a class=\""."nav-link disabled active\""." aria-current=\""."page\""." style=\""."color: white;\""."> Welcome, ". $CREDENTIALS['firstname'] ."</a>
                             </li>
                             <li class=\""."nav-item\"".">
-                                <a class=\""." nav-link "." href=\""."profilePage.php\""." active\""." aria-current=\""."page\""." style=\""."color: white;\"".">". $_SESSION['profilePicture'] ."</a>
+                                <img class=\"profilePicture\" src=\"".$CREDENTIALS['picture']."\"/>"."
                             </li>
                         ");
                     }
@@ -197,3 +148,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
 </body>
 </html>
+
+<!-- <li class=\""."nav-item\"".">
+    <a class=\""."nav-link\""." href=\""."profilePage.php\""." active\""." aria-current=\""."page\""." style=\""."color: white;\"".">"."<img class=\"profilePicture\" src=\"".$CREDENTIALS['picture']."\"/>"."</a>
+</li> -->
