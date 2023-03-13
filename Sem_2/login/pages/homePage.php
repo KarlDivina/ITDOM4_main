@@ -98,6 +98,7 @@
                 $dbname="schooldb";
 
                 $conn = new mysqli($servername, $username, $password, $dbname);
+                // $sql = "SELECT * FROM studentdetails Orders LIMIT 2, 4;"; 
                 $sql = "SELECT * FROM studentdetails;"; 
 
                 $result = mysqli_query($conn, $sql);
@@ -122,7 +123,7 @@
                                             action=\"profilePage.php\"
                                         >
                                                 <input type='hidden' name=\"check_user\" value=\"".$row['StudentNumber']."\"/>
-                                                <input type='image' class=\"profilePicture\" src=\"".$row['profilePicture']."\" style=\"width: 5vw; border-style: none; border-radius: 50px;\"/>
+                                                <input type='image' class=\"profilePicture\" src=\"".$row['profilePicture']."\" style=\"width: 5vw; height: 5vw; border-style: none; border-radius: 50px;\"/>
                                         </form> 
                                     </th>
                                     <td> ".$row['StudentNumber']." </td>
