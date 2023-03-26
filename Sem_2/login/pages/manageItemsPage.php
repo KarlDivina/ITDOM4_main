@@ -1,14 +1,6 @@
 <?php 
     session_start();
 
-    $_SESSION['FUNCTIONS'] = array(
-        "F4" => "login_user",
-        "F5" => "logout_user",
-        "F6" => "register_user",
-        "F7" => "check_user",
-        "F8" => "check_",
-    );
-
     if (!isset($_SESSION['CREDENTIALS'])){
         $_SESSION['CREDENTIALS'] = array();
     } else {
@@ -22,7 +14,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karl D</title>
+    <title>Karl D | Manage Items</title>
     <link rel="icon" type="image/x-icon" href="../assets/logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
     <link rel="stylesheet" href="./login.css">
@@ -58,16 +50,16 @@
                                                 <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."registerPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Register</a>
                                             </li>
                                         ");
-                                        // echo ("
-                                        //     <li class=\""."nav-item\"".">
-                                        //         <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."manageUsersPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Manage Users</a>
-                                        //     </li>
-                                        // ");
-                                        // echo ("
-                                        //     <li class=\""."nav-item\"".">
-                                        //         <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."manageItemsPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Manage Items</a>
-                                        //     </li>
-                                        // ");
+                                        echo ("
+                                            <li class=\""."nav-item\"".">
+                                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."manageUsersPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Manage Users</a>
+                                            </li>
+                                        ");
+                                        echo ("
+                                            <li class=\""."nav-item\"".">
+                                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."manageItemsPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Manage Items</a>
+                                            </li>
+                                        ");
                                     }
                                 ?>
                             </ul>
@@ -132,7 +124,7 @@
                                             method=\"post\"
                                             action=\"itemPage.php\"
                                         >
-                                                <input type='hidden' name=\"check_item\" value=\"".$row['ItemCode']."\"/>
+                                                <input type='hidden' name=\"manage_item\" value=\"".$row['ItemCode']."\"/>
                                                 <input type='image' class=\"profilePicture\" src=\"".$row['Image']."\" style=\"width: 10vw; height: 15vw; border-style: none; border-radius: 50px;\"/>
                                         </form> 
                                     </th>
@@ -162,9 +154,6 @@
                             <li class=\""."nav-item\"".">
                                 <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."manageUsersPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Manage Users</a>
                             </li>
-                            <li class=\""."nav-item\"".">
-                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."manageItemsPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Manage Items</a>
-                            </li>
                             <form
                                 method=\""."post\""."
                                 action=\""."homePage.php\""."
@@ -187,9 +176,6 @@
                         ");
                     } else if($userAccess == "MEMBER"){
                         echo ("
-                            <li class=\""."nav-item\"".">
-                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."manageItemsPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Manage Items</a>
-                            </li>
                             <form
                                 method=\""."post\""."
                                 action=\""."homePage.php\""."

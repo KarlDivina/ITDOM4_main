@@ -18,12 +18,31 @@ img.profilePicture {
     font-size: 13vh;
 }
 
-.items{
+/* .items{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     padding: 30px 20px;
     grid-column-gap: 20px;
     grid-row-gap: 30px;
+} */
+
+.items{
+    /* display: flex;
+    flex-direction: row; */
+    margin-left: 10vw;
+    margin-right: 5vw;
+    /* padding-left: 5vw;
+    padding-right: 5vw; */
+}
+
+.itemTable{
+    /* display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 5vw;
+    padding-right: 5vw; */
+    margin-left: 5vw;
 }
 
 div > input{

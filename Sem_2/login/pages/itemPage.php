@@ -1,20 +1,11 @@
 <?php 
     session_start();
 
-    $_SESSION['FUNCTIONS'] = array(
-        "F4" => "login_user",
-        "F5" => "logout_user",
-        "F6" => "register_user",
-        "F7" => "check_user",
-        "F8" => "check_",
-    );
-
     if (!isset($_SESSION['CREDENTIALS'])){
         $_SESSION['CREDENTIALS'] = array();
     } else {
         $CREDENTIALS = $_SESSION['CREDENTIALS'];
     }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,10 +13,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karl D</title>
+    <title>Karl D | Update Item</title>
     <link rel="icon" type="image/x-icon" href="../assets/logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-    <link rel="stylesheet" href="./login.css">
+    <link rel="stylesheet" href="login.css">
 </head>
 <body class="container-fluid">
     <div class="row">
@@ -46,7 +37,7 @@
                                 </li>
                                 <?php
                                     if(!empty($_SESSION['CREDENTIALS'])){
-                                        checkAccess($CREDENTIALS);
+                                        checkAccess($_SESSION['CREDENTIALS']);
                                     } else {
                                         echo ("
                                             <li class=\""."nav-item\"".">
@@ -58,16 +49,6 @@
                                                 <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."registerPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Register</a>
                                             </li>
                                         ");
-                                        // echo ("
-                                        //     <li class=\""."nav-item\"".">
-                                        //         <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."manageUsersPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Manage Users</a>
-                                        //     </li>
-                                        // ");
-                                        // echo ("
-                                        //     <li class=\""."nav-item\"".">
-                                        //         <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."manageItemsPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Manage Items</a>
-                                        //     </li>
-                                        // ");
                                     }
                                 ?>
                             </ul>
@@ -91,59 +72,172 @@
             </nav>
         </div>
     </div>
-    <section class="items row" style="margin: 0 30%;">
+    <section class="items">
         <?php
-            if ($_SERVER["REQUEST_METHOD"] == "POST"){
-                if (empty($_POST[$_SESSION['FUNCTIONS']["F5"]])){ //order is complete?
-                } else {
-                    logoutUser();
-                }
-            } else {
-                printItems();
-            }
 
-            function printItems(){
+            if ($_SERVER["REQUEST_METHOD"] == "POST"){
+                if (empty($_POST["update_item"])){ 
+                    if (empty($_POST["manage_item"])){
+                        if (empty($_POST["check_item"])){
+                            if (empty($_POST[$_SESSION['FUNCTIONS']["F5"]])){ 
+                            } else {
+                                logoutUser();
+                            }
+                        } else {
+                            checkItem();
+                        }
+                    } else {
+                        manageItem();
+                    }
+                } else {
+                    updateItem();
+                }
+            } 
+
+            function updateItem(){
                 $servername="localhost";
                 $username="root";
                 $password="";
                 $dbname="schooldb";
 
                 $conn = new mysqli($servername, $username, $password, $dbname);
-                // $sql = "SELECT * FROM studentdetails Orders LIMIT 2, 4;"; 
-                $sql = "SELECT * FROM items;"; 
+                $code = $_POST["update_item"];
+                // $newCode = $_POST['item_code'];
+                $newName = $_POST['item_name'];
+                $newPrice = $_POST['item_price'];
+                $sql = "UPDATE items SET ItemCode = '$code', Name = '$newName', Price = '$newPrice' WHERE ItemCode = '$code'";
+
+                if (mysqli_query($conn, $sql)) {
+                    ?> <meta http-equiv="refresh" content="0;url=http://localhost/ITDOM4/Sem_2/login/pages/manageItemsPage.php"> <?php
+                } else {
+                    manageItem();
+                }
+            }
+
+            function manageItem(){
+                $servername="localhost";
+                $username="root";
+                $password="";
+                $dbname="schooldb";
+
+                $conn = new mysqli($servername, $username, $password, $dbname);
+                $code = $_POST["manage_item"];
+                $sql = "SELECT * FROM items WHERE ItemCode = '$code'"; 
 
                 $result = mysqli_query($conn, $sql);
                 if (!$result) {
                     die("Query failed: " . mysqli_error($conn));
                     echo("QUERY: " . $sql ."<br> query end <br>");
                     echo("ERROR: " . $conn->error ."<br> error end <br>");
+                    echo("CODE: " . $code ."<br> pass end <br>");
                 } else {
-                    echo("<table>
-                    <tr>
-                        <th scope='col' style='padding-right: 15vw;'></th>
-                        <th scope='col' style='padding-right: 15vw;'></th>
-                        <th scope='col' style='padding-right: 15vw;'></th>
-                    </tr>");
-                        for($x = 0; $x < $result->num_rows; $x++){
-                            while ($row = mysqli_fetch_assoc($result)){
-                                echo("<tr>
-                                    <th scope='row'>  
-                                        <form
-                                            method=\"post\"
-                                            action=\"itemPage.php\"
-                                        >
-                                                <input type='hidden' name=\"check_item\" value=\"".$row['ItemCode']."\"/>
-                                                <input type='image' class=\"profilePicture\" src=\"".$row['Image']."\" style=\"width: 10vw; height: 15vw; border-style: none; border-radius: 50px;\"/>
-                                        </form> 
-                                    </th>
-                                    <td> ".$row['Name']." </td>
-                                    <td> $".$row['Price']." </td>
-                                </tr>");
-                        }
+                    echo("<table style='margin: 0 80%; background-color: pink; border-style: none; border-radius: 25px; '>");
+                    while ($row = mysqli_fetch_assoc($result)){
+                        echo("<form
+                            method='post'
+                            action='itemPage.php'
+                        >");
+                        echo("<tr>");
+                            echo("<td> <img class=\""."profilePicture\""." src=\"".$row['Image']."\" style=\""."width: 20vw; padding-top: 2vh; border-style: none; border-radius: 25px; margin-left: 45%; \""."/> </td> ");
+                        echo("</tr>");
+                        echo("<tr>");
+                            echo("<td style='padding-left: 2vw; padding-top: 2vh;'> <h5> Name: </h5> </td> ");
+                            echo("<td style='padding-right: 2vw; padding-top: 2vh;'> <h5>
+                                <input
+                                    type='text'
+                                    name='item_name'
+                                    value='".$row['Name']."'
+                                /> </h5>
+                            </td> ");
+                        echo("</tr>");
+                        echo("<tr>");
+                            echo("<td style='padding-left: 2vw;'> <h5> Price: </h5> </td> ");
+                            echo("<td style='padding-right: 2vw;'> <h5>
+                                <input
+                                    type='number'
+                                    name='item_price'
+                                    value='".$row['Price']."'
+                                /> </h5>
+                            </td> ");
+                        echo("</tr>");
+                        echo("<tr>");
+                            echo("<td style='padding-left: 2vw;'> <h5> Product Code: </h5> </td> ");
+                            echo("<td style='padding-right: 2vw;'>  
+                                <h4> ".$row['ItemCode']." </h4>
+                            </td> ");
+                            // echo("<td style='padding-right: 2vw;'> <h5>
+                            //     <input
+                            //         type='text'
+                            //         name='item_code'
+                            //         value='".$row['ItemCode']."'
+                            //     /> </h5>
+                            // </td> ");
+                        echo("</tr>");
+                        echo("<tr>");
+                            echo("<td> 
+                            <input 
+                                type='hidden'
+                                name='update_item'
+                                value='".$row['ItemCode']."'
+                            />
+                            <input 
+                                type='submit'
+                                class='btn btn-info'
+                                value='Update Item Details'
+                                style='color: white; width: 20vw; margin-left: 45%; margin-bottom: 2vh;'/> 
+                            </td>");
+                        echo("</tr>");
+                        echo("</form>");
+                        $conn->close();
                     }
+                    echo("</table>");
                 }
-                echo("</table>");
-                $conn->close();
+            }
+
+            function checkItem(){
+                $servername="localhost";
+                $username="root";
+                $password="";
+                $dbname="schooldb";
+
+                $conn = new mysqli($servername, $username, $password, $dbname);
+                $code = $_POST["check_item"];
+                $sql = "SELECT * FROM items WHERE ItemCode = '$code'"; 
+
+                $result = mysqli_query($conn, $sql);
+                if (!$result) {
+                    die("Query failed: " . mysqli_error($conn));
+                    echo("QUERY: " . $sql ."<br> query end <br>");
+                    echo("ERROR: " . $conn->error ."<br> error end <br>");
+                    echo("CODE: " . $code ."<br> pass end <br>");
+                } else {
+                    echo("<table style='margin: 0 120%; background-color: pink; border-style: none; border-radius: 25px; '>");
+                    while ($row = mysqli_fetch_assoc($result)){
+                        echo("<tr>");
+                            echo("<td> <img class=\""."profilePicture\""." src=\"".$row['Image']."\" style=\""."width: 18vw; padding-top: 2vh; border-style: none; border-radius: 25px; margin-left: 16%; \""."/> </td> ");
+                        echo("</tr>");
+                        echo("<tr>");
+                            echo("<td style='padding-left: 2vw;'> <h5> Name: </h5> </td> ");
+                            echo("<td style='margin-left: 5vw;'>  
+                                <h4> ".$row['Name']." </h4>
+                            </td> ");
+                        echo("</tr>");
+                        echo("<tr>");
+                            echo("<td style='padding-left: 2vw;'> <h5> Price: </h5> </td> ");
+                            echo("<td style='padding-right: 2vw;'>  
+                                <h4> $".$row['Price']." </h4>
+                            </td> ");
+                        echo("</tr>");
+                        echo("<tr>");
+                            echo("<td style='padding-left: 2vw;'> <h5> Product Code: </h5> </td> ");
+                            echo("<td style='padding-right: 2vw;'>  
+                                <h4> ".$row['ItemCode']." </h4>
+                            </td> ");
+                        echo("</tr>");
+                        $conn->close();
+                    }
+                    echo("</table>");
+                }
             }
 
             function logoutUser(){
@@ -187,9 +281,6 @@
                         ");
                     } else if($userAccess == "MEMBER"){
                         echo ("
-                            <li class=\""."nav-item\"".">
-                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."manageItemsPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Manage Items</a>
-                            </li>
                             <form
                                 method=\""."post\""."
                                 action=\""."homePage.php\""."
@@ -205,8 +296,8 @@
                                 action=\""."profilePage.php\""."
                             >
                                 </li>
-                                    <input type='hidden' name=\""."check_user\""." value=\"".$CREDENTIALS['number']."\""."/>
-                                    <input type='image' class=\""."profilePicture\""." src=\"".$CREDENTIALS['picture']."\" style=\""."width: 5vw; height: 5vw; border-style: none; border-radius: 30px;\""."/>"."
+                                    <input type='hidden' value=\"".$CREDENTIALS['number']."\""."/>
+                                    <input type='image' class=\""."profilePicture\""." src=\"".$CREDENTIALS['picture']."\" style=\""."width: 5vw;  height: 5vw;border-style: none; border-radius: 30px;\""."/>"."
                                 </li>
                             </form>
                         ");
@@ -217,6 +308,8 @@
             function reloadPage(){
                 echo("<meta http-equiv='refresh' content='1'>");
             }
+
+
         ?>
     </section>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
