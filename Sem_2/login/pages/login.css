@@ -29,7 +29,7 @@ img.profilePicture {
 .items{
     /* display: flex;
     flex-direction: row; */
-    margin-left: 10vw;
+    margin-left: 5vw;
     margin-right: 5vw;
     /* padding-left: 5vw;
     padding-right: 5vw; */
@@ -85,7 +85,45 @@ div > input:hover{
     border-radius: 5%;
 }
 
+.card-cart {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 2%;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+    background-color: pink;
+    color: white;
+    border: none;
+}
+
+.card-home {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 2%;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+    background-color: pink;
+    color: white;
+    border: none;
+}
+
 .card-login > .col-12 > .items{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.card-cart > .col-12 > .items{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.card-home > .col-12 > .items{
     display: flex;
     flex-direction: row;
     justify-content: center;

@@ -138,7 +138,7 @@
                                             type="text"
                                             class="form-control form-rounded"
                                             name="item_name"
-                                            placeholder="<?php echo $_SESSION['item_name']?>"
+                                            placeholder="<?php echo $_SESSION['ERR_NAME']?>"
                                             value="<?php if(!empty($_POST['item_name'])){
                                                 echo($_POST['item_name']);
                                             } ?>"
@@ -150,7 +150,7 @@
                                             type="text"
                                             class="form-control form-rounded"
                                             name="item_price"
-                                            placeholder="<?php echo $_SESSION['item_price']?>"
+                                            placeholder="<?php echo $_SESSION['ERR_PRICE']?>"
                                             value="<?php if(!empty($_POST['item_price'])){
                                                 echo($_POST['item_price']);
                                             } ?>"
@@ -196,8 +196,8 @@
                 $providedName = $_POST['item_name'];
                 $providedPrice = $_POST['item_price'];
 
-                if(!$error = checkDetails($providedFirstName, $providedLastName, $providedUsername, $providedPassword)){
-                    if($error = checkUser($CREDENTIALS, $providedUsername)){
+                if(!$error = checkDetails($providedCode, $providedName, $providedPrice)){
+                    if(!$error = checkItem($providedCode)){
                         // echo("user is valid");
                         $index = count($CREDENTIALS);
                         $servername="localhost";
@@ -231,89 +231,57 @@
                             } else {
                                 if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
                                     $providedImage = ("../assets/".$_FILES["image"]["name"]);
-                                    $sql = "INSERT INTO studentdetails(
-                                    StudentNumber, 
+                                    $sql = "INSERT INTO items(
+                                    ItemCode, 
                                     Name, 
-                                    Bday, 
-                                    Course, 
-                                    Contact_Number, 
-                                    Email_Address, 
-                                    username, 
-                                    password, 
-                                    name_first, 
-                                    name_last, 
-                                    access, 
-                                    profilePicture
+                                    Price,
+                                    Image
                                     ) VALUES (
-                                        '$providedStudentNumber', 
-                                        '$providedFullName', 
-                                        '$providedBirthday', 
-                                        '$providedCourse', 
-                                        '$providedContactNumber', 
-                                        '$providedEmail',
-                                        '$providedUsername',
-                                        '$providedPassword',
-                                        '$providedFirstName',
-                                        '$providedLastName',
-                                        'MEMBER',
+                                        '$providedCode', 
+                                        '$providedName', 
+                                        '$providedPrice',
                                         '$providedImage'
                                     );";
                                     if($conn->query($sql) === TRUE){
                                         $conn->close();
                                         // record inserted
                                         // echo("User registered succesfully!");
-                                        // $_SESSION["USERNAME"] = $providedUsername;
-                                        // $_SESSION["FNAME"] = $providedFirstName;
-                                        // $_SESSION["LNAME"] = $providedLastName;
-                                        $CREDS = array(
-                                            "number" => "$providedStudentNumber", 
-                                            "username" => "$providedUsername", 
-                                            "firstname" => "$providedFirstName", 
-                                            "lastname" => "$providedLastName",
-                                            "picture" => "$providedImage",
-                                            "access" => "MEMBER"
-                                        );
-                                        if(!$error = checkUser($CREDS, $providedPassword)){
-                                            // echo("user logged in");
-                                            $_SESSION['CREDENTIALS'] = $CREDS;
-                                            ?> <meta http-equiv="refresh" content="0;url=http://localhost/ITDOM4/Sem_2/login/pages/homePage.php"> <?php
-                                        }
+                                        ?> <meta http-equiv="refresh" content="0;url=http://localhost/ITDOM4/Sem_2/login/pages/homePage.php"> <?php
                                     } else {
                                         echo("Error: " . $sql . "<br>" . $conn->error);
                                     }
                                 }
                             }
                         }
+                    } else {
+                        $_SESSION['ERR_CODE'] = "Cannot have duplicate Item Code!";
+                        printError();
                     }
                 } else {
                     printError();
                 }
             }
         } else {
-            printRegister();
+            printAddItem();
         } 
 
-        function checkDetails($first, $last, $user, $pass){
+        function checkDetails($code, $name, $price){
             $errCount = 0;
 
-            $_SESSION['ERR_FNAME'] = $first;
-            $_SESSION['ERR_LNAME'] = $last;
-            $_SESSION['ERR_UNAME'] = $user;
-            $_SESSION['ERR_PASS'] = $pass;
+            $_SESSION['ERR_CODE'] = $code;
+            $_SESSION['ERR_NAME'] = $name;
+            $_SESSION['ERR_PRICE'] = $price;
 
-            if(empty($first)){
-                $_SESSION['ERR_FNAME'] = "First name is required!";
+            if(empty($code)){
+                $_SESSION['ERR_CODE'] = "Item Code is required!";
                 $errCount += 1;
-            } if(empty($last)){
-                $_SESSION['ERR_LNAME'] = "Last name is required!";
+            } if(empty($name)){
+                $_SESSION['ERR_NAME'] = "Product Name is required!";
                 $errCount += 1;
-            } if(empty($user)){
-                $_SESSION['ERR_UNAME'] = "Username is required!";
+            } if(empty($price)){
+                $_SESSION['ERR_PRICE'] = "Price is required!";
                 $errCount += 1;
-            } if(empty($pass)){
-                $_SESSION['ERR_PASS'] = "Password is required!";
-                $errCount += 1;
-            }
+            } 
 
             if($errCount > 0){
                 return(True);
@@ -323,7 +291,7 @@
             return(True);
         }
 
-        function checkItem($CREDS, $pass){
+        function checkItem($code){
             $servername="localhost";
             $username="root";
             $password="";
@@ -331,27 +299,22 @@
 
             $conn = new mysqli($servername, $username, $password, $dbname);
 
-            $code = $CREDS['item_code'];
-
             if($conn->connect_error){
                 die("Connection failed: " . $conn->connect_error);
             } else {
-                $sql = "SELECT * FROM items WHERE ItemCode=$code;";
+                $sql = "SELECT * FROM items WHERE ItemCode = '$code';";
                 if($conn->query($sql) === TRUE){
                     $result = $conn->query($sql);
                     if ($result->num_rows > 0) {
-                        while($row = $result->fetch_assoc()) {
-                            if($CREDS['username'] == $row['username'] && $pass == $row['password']){
-                                $conn->close();
-                                return(False);
-                            }
-                        }
-                    } else {
                         $conn->close();
                         return(True);
+                    } else {
+                        $conn->close();
+                        return(False);
                     }
                 } else {
-                    echo("Error: " . $sql . "<br>" . $conn->error);
+                    $conn->close();
+                    return(False);
                 }
                 $conn->close();
             }

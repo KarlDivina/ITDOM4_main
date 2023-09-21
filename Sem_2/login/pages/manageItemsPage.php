@@ -83,7 +83,7 @@
             </nav>
         </div>
     </div>
-    <section class="items row" style="margin: 0 30%;">
+    <section class="items row">
         <?php
             if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 if (empty($_POST[$_SESSION['FUNCTIONS']["F5"]])){ //order is complete?
@@ -91,8 +91,30 @@
                     logoutUser();
                 }
             } else {
-                printItems();
+                printHome();
             }
+
+        function printHome(){
+            ?>
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    <div class="row card-home">
+                        <div class="col-12 mt-2"> <h1> MANAGE ITEMS -- AUTHORIZED USERS ONLY </h1> </div>
+                        <hr>
+                        <div class="col-12">
+                            <section class="items">
+                                <?php
+                                    printItems();
+                                ?>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2"></div>
+            </div>
+            <?php
+        }
 
             function printItems(){
                 $servername="localhost";
@@ -112,9 +134,9 @@
                 } else {
                     echo("<table>
                     <tr>
-                        <th scope='col' style='padding-right: 15vw;'></th>
-                        <th scope='col' style='padding-right: 15vw;'></th>
-                        <th scope='col' style='padding-right: 15vw;'></th>
+                        <th scope='col' style='padding-right: 7vw; padding-left: 7vw;'>Image</th>
+                        <th scope='col' style='padding-right: 7vw; padding-left: 7vw;'>Product Name</th>
+                        <th scope='col' style='padding-right: 7vw; padding-left: 7vw;'>Price</th>
                     </tr>");
                         for($x = 0; $x < $result->num_rows; $x++){
                             while ($row = mysqli_fetch_assoc($result)){
@@ -148,9 +170,57 @@
             function checkAccess($CREDENTIALS){
                 if(isset($CREDENTIALS['access'])){
                     $userAccess = $CREDENTIALS['access'];
-                    if($userAccess == "SUPER"){
+                    if($userAccess == "USER"){
+                        echo ("
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."cartPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Check Out</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."orderHistoryPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Order History</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."bookingPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Book a Date</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."bookedDatetimesPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Booked Dates</a>
+                            </li>
+                            <form
+                                method=\""."post\""."
+                                action=\""."homePage.php\""."
+                            >
+                                <li class=\""."nav-item\"".">
+                                    <input type=\""."submit\""." class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." name=\""."logout_user\""." value=\""."Sign out\""." style=\""."color: white; margin-right: 5px;\""."/>
+                                </li>
+                            </form>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link disabled active\""." aria-current=\""."page\""." style=\""."color: white;\""."> Welcome, ". $CREDENTIALS['firstname'] ."</a>
+                            <form
+                                method=\""."post\""."
+                                action=\""."profilePage.php\""."
+                            >
+                                </li>
+                                    <input type='hidden' name=\""."check_user\""." value=\"".$CREDENTIALS['number']."\""."/>
+                                    <input type='image' class=\""."profilePicture\""." src=\"".$CREDENTIALS['picture']."\" style=\""."width: 5vw; height: 5vw; border-style: none; border-radius: 30px;\""."/>"."
+                                </li>
+                            </form>
+                        ");
                     } else if($userAccess == "ADMIN"){
                         echo ("
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."cartPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Check Out</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."orderHistoryPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Order History</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."dashboardPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Dashboard</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."bookingPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Book a Date</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."bookedDatetimesPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Booked Dates</a>
+                            </li>
                             <li class=\""."nav-item\"".">
                                 <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."manageUsersPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Manage Users</a>
                             </li>
@@ -179,6 +249,18 @@
                         ");
                     } else if($userAccess == "MEMBER"){
                         echo ("
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."cartPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Check Out</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."orderHistoryPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Order History</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."bookingPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Book a Date</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."bookedDatetimesPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Booked Dates</a>
+                            </li>
                             <form
                                 method=\""."post\""."
                                 action=\""."homePage.php\""."

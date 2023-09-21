@@ -74,7 +74,6 @@
     </div>
     <section class="items">
         <?php
-
             if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 if (empty($_POST["update_user"])){ 
                     if (empty($_POST["manage_user"])){ 
@@ -133,7 +132,7 @@
                     echo("ERROR: " . $conn->error ."<br> error end <br>");
                     echo("NUMBER: " . $number ."<br> pass end <br>");
                 } else {
-                    echo("<table style='margin: 0 80%; background-color: pink; border-style: none; border-radius: 25px; '>");
+                    echo("<table style='margin: 1em 30%; background-color: pink; border-style: none; border-radius: 25px; '>");
                     while ($row = mysqli_fetch_assoc($result)){
                         echo("<form
                             method='post'
@@ -233,7 +232,7 @@
                     echo("ERROR: " . $conn->error ."<br> error end <br>");
                     echo("NUMBER: " . $number ."<br> pass end <br>");
                 } else {
-                    echo("<table style='margin: 0 82%; background-color: pink; border-style: none; border-radius: 25px; '>");
+                    echo("<table style='margin: 1em 30%; background-color: pink; border-style: none; border-radius: 25px; '>");
                     while ($row = mysqli_fetch_assoc($result)){
                         echo("<tr>");
                             echo("<td> <img class=\""."profilePicture\""." src=\"".$row['profilePicture']."\" style=\""."width: 20vw; padding-top: 2vh; border-style: none; border-radius: 25px; margin-left: 43%; \""."/> </td> ");
@@ -284,9 +283,57 @@
             function checkAccess($CREDENTIALS){
                 if(isset($CREDENTIALS['access'])){
                     $userAccess = $CREDENTIALS['access'];
-                    if($userAccess == "SUPER"){
+                    if($userAccess == "USER"){
+                        echo ("
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."cartPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Check Out</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."orderHistoryPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Order History</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."bookingPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Book a Date</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."bookedDatetimesPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Booked Dates</a>
+                            </li>
+                            <form
+                                method=\""."post\""."
+                                action=\""."homePage.php\""."
+                            >
+                                <li class=\""."nav-item\"".">
+                                    <input type=\""."submit\""." class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." name=\""."logout_user\""." value=\""."Sign out\""." style=\""."color: white; margin-right: 5px;\""."/>
+                                </li>
+                            </form>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link disabled active\""." aria-current=\""."page\""." style=\""."color: white;\""."> Welcome, ". $CREDENTIALS['firstname'] ."</a>
+                            <form
+                                method=\""."post\""."
+                                action=\""."profilePage.php\""."
+                            >
+                                </li>
+                                    <input type='hidden' name=\""."check_user\""." value=\"".$CREDENTIALS['number']."\""."/>
+                                    <input type='image' class=\""."profilePicture\""." src=\"".$CREDENTIALS['picture']."\" style=\""."width: 5vw; height: 5vw; border-style: none; border-radius: 30px;\""."/>"."
+                                </li>
+                            </form>
+                        ");
                     } else if($userAccess == "ADMIN"){
                         echo ("
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."cartPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Check Out</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."orderHistoryPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Order History</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."dashboardPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Dashboard</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."bookingPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Book a Date</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."bookedDatetimesPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Booked Dates</a>
+                            </li>
                             <li class=\""."nav-item\"".">
                                 <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."manageUsersPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Manage Users</a>
                             </li>
@@ -318,6 +365,21 @@
                         ");
                     } else if($userAccess == "MEMBER"){
                         echo ("
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."cartPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Check Out</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."orderHistoryPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Order History</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."manageItemsPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Manage Items</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."bookingPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Book a Date</a>
+                            </li>
+                            <li class=\""."nav-item\"".">
+                                <a class=\""."nav-link btn btn-outline-light\""." aria-current=\""."page\""." href=\""."bookedDatetimesPage.php\""." style=\""."color: white; margin-right: 5px;\"".">Booked Dates</a>
+                            </li>
                             <form
                                 method=\""."post\""."
                                 action=\""."homePage.php\""."
@@ -333,8 +395,8 @@
                                 action=\""."profilePage.php\""."
                             >
                                 </li>
-                                    <input type='hidden' value=\"".$CREDENTIALS['number']."\""."/>
-                                    <input type='image' class=\""."profilePicture\""." src=\"".$CREDENTIALS['picture']."\" style=\""."width: 5vw;  height: 5vw;border-style: none; border-radius: 30px;\""."/>"."
+                                    <input type='hidden' name=\""."check_user\""." value=\"".$CREDENTIALS['number']."\""."/>
+                                    <input type='image' class=\""."profilePicture\""." src=\"".$CREDENTIALS['picture']."\" style=\""."width: 5vw; height: 5vw; border-style: none; border-radius: 30px;\""."/>"."
                                 </li>
                             </form>
                         ");
