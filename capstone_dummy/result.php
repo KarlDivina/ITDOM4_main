@@ -27,7 +27,7 @@ function debug_to_console($data, $context = 'Debug in Console')
 </head>
 
 <body class="container-fluid">
-  <div class="row p-3" style="background-color:bisque; top: 0;">
+  <div class="row p-3" style="background-color:#ffa500; top: 0;">
     <div class="col-12">
       <ul class="nav nav-pills justify-content-center">
         <li class="nav-item">
@@ -38,9 +38,6 @@ function debug_to_console($data, $context = 'Debug in Console')
         </li>
         <li class="nav-item">
           <a class="nav-link" href="learnmore.php" style="color: black">Learn More</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Log In</a>
         </li>
       </ul>
     </div>
@@ -201,9 +198,6 @@ function debug_to_console($data, $context = 'Debug in Console')
                   <div class="col-8">
                     <p> And a <b>final take-home amount</b> of <b>₱' . $_SESSION['FINAL_INCOME'] . '</b></p>
                   </div>
-                  <div class="col-4">
-                    <a href="#">How was this calculated?</a>
-                  </div>
                 </div>
               </div>
             </div>
@@ -222,13 +216,12 @@ function debug_to_console($data, $context = 'Debug in Console')
                           <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
                         </div>
                         <div class="col-6">
-                          <select class="form-control" name="change_tax" id="tax_type">
+                          <select class="form-control" name="change_tax" id="tax_type" disabled>
                             <option value="capital_gains">Capital Gains Tax</option>
                             <option value="estate">Estate Tax</option>
                             <option value="income">Income Tax</option>
                             <option value="percentage">Percentage Tax</option>
                             <option value="value-added">Value-Added Tax</option>
-                            <option value="witholding">Witholding Tax</option>
                           </select>
                         </div>
                       </div>
@@ -240,43 +233,17 @@ function debug_to_console($data, $context = 'Debug in Console')
                       action="homepage.php" 
                       id="computeTax"
                     >
-                      <div class="row mt-3">
-                        <div class="col-5">
-                          <b>Period of Income</b>
-                        </div>
-                        <div class="col-6">
-                          <div class="form-check form-check-inline">');
-        if ($_POST['income_period'] == "monthly") {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault1" checked disabled>');
-        } else {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault1" disabled>');
-        }
-        echo ('<label class="form-check-label" for="flexRadioDefault1">
-                              Monthly
-                            </label>
-                          </div>
-                          <div class="form-check form-check-inline">');
-        if ($_POST['income_period'] == "annually") {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault2" checked disabled>');
-        } else {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault2" disabled>');
-        }
-        echo ('<label class="form-check-label" for="flexRadioDefault2">
-                              Annually
-                            </label>
-                          </div>
-                        </div>
-                      </div>');
-        echo ('<div class="row mt-3">
-                        <div class="col-5">
-                          <b>Income (in PHP)</b>
-                        </div>
-                        <div class="col-6">
-                          <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1" name="income_value" value="' . $_POST["income_value"] . '" disabled>
-                          </div>
+                    <div class="row mt-3">
+                      <div class="col-5">
+                        <b>CGT Base</b>
+                      </div>
+                      <div class="col-6">
+                        <div class="input-group mb-3">
+                          <input type="text" class="form-control" placeholder="CGT Base" aria-label="income" aria-describedby="basic-addon1" name="cgt_value" value= ' . $_POST["cgt_base"] . '>
                         </div>
                       </div>
+                    </div>
+
                       <div class="row justify-content-center">
                         <div class="col-2">
                           <div class="input-group mb-3">
@@ -293,213 +260,19 @@ function debug_to_console($data, $context = 'Debug in Console')
           <div class="col-5 m-3">
             <div class="row mt-4">
               <div class="card col-12">
-                <div class="card-body row mt-3">
-                  <div class="col-4">
-                    <p><b> You will need to pay </b></p>
+                <div class="card-body row mt-2 mb-5">
+                <h3><b> Your tax breakdown report is as follows: </b></h3>
+                  <div class="col-12">
+                    <p><b> Capital Gains Tax </b></p>
                   </div>
-                  <div class="col-4">
-                    <p>₱' . $_SESSION['PAYMENT'] . '</p>
+                  <div class="col-5">
+                    <p> CGT BASE </p>
                   </div>
-                  <div class="col-4">
-                    <a href="#">How was this calculated?</a>
+                  <div class="col-6">
+                    <p><b>₱' . $_POST['cgt_base'] . '</b></p>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ');
-      } else if ($tax_type == "estate") {
-        echo ('
-          <div class="col-5 m-3">
-            <div class="row mt-4">
-              <div class="card col-12">
-                <div class="card-body row">
-                  <div class="row mt-3 align-items-center">
-                    <form method="post" action="homepage.php" id="taxForm">
-                      <div class="form row">
-                        <div class="col-5">
-                          <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
-                        </div>
-                        <div class="col-6">
-                          <select class="form-control" name="change_tax" id="tax_type">
-                            <option value="estate">Estate Tax</option>
-                            <option value="capital_gains">Capital Gains Tax</option>
-                            <option value="income">Income Tax</option>
-                            <option value="percentage">Percentage Tax</option>
-                            <option value="value-added">Value-Added Tax</option>
-                            <option value="witholding">Witholding Tax</option>
-                          </select>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                  <div class="col-12 card mt-3">
-                    <form 
-                      method="post" 
-                      action="homepage.php" 
-                      id="computeTax"
-                    >
-                      <div class="row mt-3">
-                        <div class="col-5">
-                          <b>Period of Income</b>
-                        </div>
-                        <div class="col-6">
-                          <div class="form-check form-check-inline">');
-        if ($_POST['income_period'] == "monthly") {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault1" checked disabled>');
-        } else {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault1" disabled>');
-        }
-        echo ('<label class="form-check-label" for="flexRadioDefault1">
-                              Monthly
-                            </label>
-                          </div>
-                          <div class="form-check form-check-inline">');
-        if ($_POST['income_period'] == "annually") {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault2" checked disabled>');
-        } else {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault2" disabled>');
-        }
-        echo ('<label class="form-check-label" for="flexRadioDefault2">
-                              Annually
-                            </label>
-                          </div>
-                        </div>
-                      </div>');
-        echo ('<div class="row mt-3">
-                        <div class="col-5">
-                          <b>Income (in PHP)</b>
-                        </div>
-                        <div class="col-6">
-                          <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1" name="income_value" value="' . $_POST["income_value"] . '" disabled>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row justify-content-center">
-                        <div class="col-2">
-                          <div class="input-group mb-3">
-                            <input type="submit" class="btn btn-dark" value="Return">
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> 
-          <div class="col-5 m-3">
-            <div class="row mt-4">
-              <div class="card col-12">
-                <div class="card-body row mt-3">
-                  <div class="col-4">
-                    <p><b> You will need to pay </b></p>
-                  </div>
-                  <div class="col-4">
-                    <p>₱' . $_SESSION['PAYMENT'] . '</p>
-                  </div>
-                  <div class="col-4">
-                    <a href="#">How was this calculated?</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ');
-      } else if ($tax_type == "percentage") {
-        echo ('
-          <div class="col-5 m-3">
-            <div class="row mt-4">
-              <div class="card col-12">
-                <div class="card-body row">
-                  <div class="row mt-3 align-items-center">
-                    <form method="post" action="homepage.php" id="taxForm">
-                      <div class="form row">
-                        <div class="col-5">
-                          <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
-                        </div>
-                        <div class="col-6">
-                          <select class="form-control" name="change_tax" id="tax_type">
-                            <option value="percentage">Percentage Tax</option>
-                            <option value="capital_gains">Capital Gains Tax</option>
-                            <option value="estate">Estate Tax</option>
-                            <option value="income">Income Tax</option>
-                            <option value="value-added">Value-Added Tax</option>
-                            <option value="witholding">Witholding Tax</option>
-                          </select>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                  <div class="col-12 card mt-3">
-                    <form 
-                      method="post" 
-                      action="homepage.php" 
-                      id="computeTax"
-                    >
-                      <div class="row mt-3">
-                        <div class="col-5">
-                          <b>Period of Income</b>
-                        </div>
-                        <div class="col-6">
-                          <div class="form-check form-check-inline">');
-        if ($_POST['income_period'] == "monthly") {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault1" checked disabled>');
-        } else {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault1" disabled>');
-        }
-        echo ('<label class="form-check-label" for="flexRadioDefault1">
-                              Monthly
-                            </label>
-                          </div>
-                          <div class="form-check form-check-inline">');
-        if ($_POST['income_period'] == "annually") {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault2" checked disabled>');
-        } else {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault2" disabled>');
-        }
-        echo ('<label class="form-check-label" for="flexRadioDefault2">
-                              Annually
-                            </label>
-                          </div>
-                        </div>
-                      </div>');
-        echo ('<div class="row mt-3">
-                        <div class="col-5">
-                          <b>Income (in PHP)</b>
-                        </div>
-                        <div class="col-6">
-                          <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1" name="income_value" value="' . $_POST["income_value"] . '" disabled>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row justify-content-center">
-                        <div class="col-2">
-                          <div class="input-group mb-3">
-                            <input type="submit" class="btn btn-dark" value="Return">
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> 
-          <div class="col-5 m-3">
-            <div class="row mt-4">
-              <div class="card col-12">
-                <div class="card-body row mt-3">
-                  <div class="col-4">
-                    <p><b> You will need to pay </b></p>
-                  </div>
-                  <div class="col-4">
-                    <p>₱' . $_SESSION['PAYMENT'] . '</p>
-                  </div>
-                  <div class="col-4">
-                    <a href="#">How was this calculated?</a>
+                  <div class="col-8">
+                    <p> You will be required to pay an amount of <b>₱' . $_SESSION['CGT'] . '</b> in <b>capital gains tax</b> from your sale. </p>
                   </div>
                 </div>
               </div>
@@ -519,13 +292,10 @@ function debug_to_console($data, $context = 'Debug in Console')
                           <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
                         </div>
                         <div class="col-6">
-                          <select class="form-control" name="change_tax" id="tax_type">
+                          <select class="form-control" name="change_tax" id="tax_type" disabled>
                             <option value="value-added">Value-Added Tax</option>
                             <option value="capital_gains">Capital Gains Tax</option>
-                            <option value="estate">Estate Tax</option>
                             <option value="income">Income Tax</option>
-                            <option value="percentage">Percentage Tax</option>
-                            <option value="witholding">Witholding Tax</option>
                           </select>
                         </div>
                       </div>
@@ -539,38 +309,38 @@ function debug_to_console($data, $context = 'Debug in Console')
                     >
                       <div class="row mt-3">
                         <div class="col-5">
-                          <b>Period of Income</b>
+                          <b>Type of VAT</b>
                         </div>
                         <div class="col-6">
                           <div class="form-check form-check-inline">');
-        if ($_POST['income_period'] == "monthly") {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault1" checked disabled>');
+        if ($_POST['vat_type'] == "gross") {
+          echo ('<input class="form-check-input" type="radio" name="vat_type" id="flexRadioDefault1" checked disabled>');
         } else {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault1" disabled>');
+          echo ('<input class="form-check-input" type="radio" name="vat_type" id="flexRadioDefault1" disabled>');
         }
         echo ('<label class="form-check-label" for="flexRadioDefault1">
-                              Monthly
+                              Gross
                             </label>
                           </div>
                           <div class="form-check form-check-inline">');
-        if ($_POST['income_period'] == "annually") {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault2" checked disabled>');
+        if ($_POST['vat_type'] == "nett") {
+          echo ('<input class="form-check-input" type="radio" name="vat_type" id="flexRadioDefault2" checked disabled>');
         } else {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault2" disabled>');
+          echo ('<input class="form-check-input" type="radio" name="vat_type" id="flexRadioDefault2" disabled>');
         }
         echo ('<label class="form-check-label" for="flexRadioDefault2">
-                              Annually
+                              Nett
                             </label>
                           </div>
                         </div>
                       </div>');
         echo ('<div class="row mt-3">
                         <div class="col-5">
-                          <b>Income (in PHP)</b>
+                          <b>Amount</b>
                         </div>
                         <div class="col-6">
                           <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1" name="income_value" value="' . $_POST["income_value"] . '" disabled>
+                            <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1" name="income_value" value="' . $_POST["vat_amount"] . '" disabled>
                           </div>
                         </div>
                       </div>
@@ -590,114 +360,25 @@ function debug_to_console($data, $context = 'Debug in Console')
           <div class="col-5 m-3">
             <div class="row mt-4">
               <div class="card col-12">
-                <div class="card-body row mt-3">
-                  <div class="col-4">
-                    <p><b> You will need to pay </b></p>
+                <div class="card-body row mt-2">
+                <h3><b> Your tax breakdown report is as follows: </b></h3>
+                  <div class="col-5">
+                    <p> Gross Amount </p>
                   </div>
-                  <div class="col-4">
-                    <p>₱' . $_SESSION['PAYMENT'] . '</p>
+                  <div class="col-6">
+                    <p><b>₱' . $_SESSION['VAT_GROSS'] . '</b></p>
                   </div>
-                  <div class="col-4">
-                    <a href="#">How was this calculated?</a>
+                  <div class="col-5">
+                    <p> Nett Amount </p>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ');
-      } else if ($tax_type == "witholding") {
-        echo ('
-          <div class="col-5 m-3">
-            <div class="row mt-4">
-              <div class="card col-12">
-                <div class="card-body row">
-                  <div class="row mt-3 align-items-center">
-                    <form method="post" action="homepage.php" id="taxForm">
-                      <div class="form row">
-                        <div class="col-5">
-                          <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
-                        </div>
-                        <div class="col-6">
-                          <select class="form-control" name="change_tax" id="tax_type">
-                            <option value="witholding">Witholding Tax</option>
-                            <option value="capital_gains">Capital Gains Tax</option>
-                            <option value="estate">Estate Tax</option>
-                            <option value="income">Income Tax</option>
-                            <option value="percentage">Percentage Tax</option>
-                            <option value="value-added">Value-Added Tax</option>
-                          </select>
-                        </div>
-                      </div>
-                    </form>
+                  <div class="col-6">
+                    <p><b>₱' . $_SESSION['VAT_NETT'] . '</b></p>
                   </div>
-                  <div class="col-12 card mt-3">
-                    <form 
-                      method="post" 
-                      action="homepage.php" 
-                      id="computeTax"
-                    >
-                      <div class="row mt-3">
-                        <div class="col-5">
-                          <b>Period of Income</b>
-                        </div>
-                        <div class="col-6">
-                          <div class="form-check form-check-inline">');
-        if ($_POST['income_period'] == "monthly") {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault1" checked disabled>');
-        } else {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault1" disabled>');
-        }
-        echo ('<label class="form-check-label" for="flexRadioDefault1">
-                              Monthly
-                            </label>
-                          </div>
-                          <div class="form-check form-check-inline">');
-        if ($_POST['income_period'] == "annually") {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault2" checked disabled>');
-        } else {
-          echo ('<input class="form-check-input" type="radio" name="income_period" id="flexRadioDefault2" disabled>');
-        }
-        echo ('<label class="form-check-label" for="flexRadioDefault2">
-                              Annually
-                            </label>
-                          </div>
-                        </div>
-                      </div>');
-        echo ('<div class="row mt-3">
-                        <div class="col-5">
-                          <b>Income (in PHP)</b>
-                        </div>
-                        <div class="col-6">
-                          <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1" name="income_value" value="' . $_POST["income_value"] . '" disabled>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row justify-content-center">
-                        <div class="col-2">
-                          <div class="input-group mb-3">
-                            <input type="submit" class="btn btn-dark" value="Return">
-                          </div>
-                        </div>
-                      </div>
-                    </form>
+                  <div class="col-3">
+                    <p> VAT </p>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div> 
-          <div class="col-5 m-3">
-            <div class="row mt-4">
-              <div class="card col-12">
-                <div class="card-body row mt-3">
-                  <div class="col-4">
-                    <p><b> You will need to pay </b></p>
-                  </div>
-                  <div class="col-4">
-                    <p>₱' . $_SESSION['PAYMENT'] . '</p>
-                  </div>
-                  <div class="col-4">
-                    <a href="#">How was this calculated?</a>
+                  <div class="col-3">
+                    <p><b>₱' . $_SESSION['VAT'] . '</b></p>
                   </div>
                 </div>
               </div>
@@ -815,21 +496,29 @@ function debug_to_console($data, $context = 'Debug in Console')
         }
 
         $_SESSION['FINAL_INCOME'] = $taxable_income - $_SESSION['TAX'];
-      }
+      } else if ($tax_type == "capital_gains") {
+        $CGT_BASE = $_POST['cgt_base'];
 
+        $_SESSION['CGT'] = $CGT_BASE * $RATES['CGT'];
+      } else if ($tax_type == "value-added") {
+        $TYPE = $_POST['vat_type'];
+        $AMOUNT = $_POST['vat_amount'];
+        $VAT = $RATES['VAT'];
+        $GROSS = $RATES['VAT_GROSS'];
+
+        if ($TYPE == "gross") {
+          $_SESSION['VAT'] = round(($AMOUNT * $VAT) / ($GROSS), 2);
+          $_SESSION['VAT_GROSS'] = $AMOUNT;
+          $_SESSION['VAT_NETT'] = round(($AMOUNT - $_SESSION['VAT']), 2);
+        } else {
+          $_SESSION['VAT'] = round(($AMOUNT * $VAT), 2);
+          $_SESSION['VAT_GROSS'] = round($AMOUNT + $_SESSION['VAT'], 2);
+          $_SESSION['VAT_NETT'] = $AMOUNT;
+        }
+      }
 
       $TAX_TYPE = $_SESSION['TAX_TYPE'];
       printLayout($TAX_TYPE);
-
-      debug_to_console($ANNUITY);
-      debug_to_console($MONTHLY);
-      debug_to_console($_SESSION['PHILHEALTH']);
-      debug_to_console($_SESSION['PAGIBIG']);
-      debug_to_console($_SESSION['SSS']);
-      debug_to_console($_SESSION['TAX']);
-      debug_to_console($_SESSION['TAXABLE_INCOME']);
-      debug_to_console($_SESSION['NONTAXABLE_INCOME']);
-      debug_to_console($_SESSION['FINAL_INCOME']);
     }
 
     function computeSSS_REGULAR($MONTHLY, $FLOOR, $CEILING, $MIN, $MAX, $CUTOFF, $RANGE, $INCREASE)
@@ -958,14 +647,15 @@ function debug_to_console($data, $context = 'Debug in Console')
 
 
 
-  </div>
+  </div>s
 
-  <div class="footer row card d-flex justify-content-around" style="height: 3em; width: inherit; background-color: bisque; bottom: 0; position: fixed;">
-    <div class="card-body col-3 align-self-start" style="left: 0;">Divina & Sison &copy; 2023</div>
-    <div class="card-body col-9 d-flex flex-row-reverse">
-      <div class="row">
-        <!-- <a>Terms and Conditions</a>
-        <a>Privacy Policy</a> -->
+  <div class="row card d-flex justify-content-around" style="width: inherit; bottom: 0; position: fixed;">
+    <div class="footer">
+      <div class="container">
+        <p>&copy; 2023 Divina & Sison</p>
+        <a href="terms.php">Terms and Conditions</a>
+        <span class="mx-2">|</span>
+        <a href="privacy.php">Privacy Policy</a>
       </div>
     </div>
   </div>
