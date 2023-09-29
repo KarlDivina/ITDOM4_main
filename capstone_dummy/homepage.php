@@ -18,12 +18,40 @@ if (!isset($_SESSION['CREDENTIALS'])) {
 }
 
 if (!isset($_SESSION['TAX_TYPE'])) {
-  $_SESSION['TAX_TYPE'] = $TAX_TYPE = "income";
+  $_SESSION['TAX_TYPE'] = "income";
 } else {
   if (isset($_POST['change_tax'])) {
     $_SESSION['TAX_TYPE'] = $TAX_TYPE = $_POST['change_tax'];
   }
 }
+
+$_SESSION['RATES'] = array();
+
+$_SESSION['PHILHEALTH_VARIABLES'] = array(
+  "FLOOR" => 10000,
+  "CEILING" => 80000,
+  "RATE" => 0.04
+);
+
+$_SESSION['PAGIBIG_VARIABLES'] = array(
+  "FLOOR" => 1500,
+  "CEILING" => 5000,
+  "RATE_MIN" => 0.01,
+  "RATE_MAX" => 0.02
+);
+
+$_SESSION['SSS_VARIABLES'] = array(
+  "FLOOR" => 4249.99,
+  "CEILING" => 4750,
+  "REGULAR_MIN" => 180,
+  "REGULAR_MAX" => 900,
+  "REGULAR_CUTOFF" => 19750,
+  "MPF_MIN" => 22.5,
+  "MPF_MAX" => 450,
+  "MPF_CUTOFF" => 29750,
+  "RANGE" => 500,
+  "INCREASE" => 22.5
+);
 
 ?>
 
@@ -35,6 +63,7 @@ if (!isset($_SESSION['TAX_TYPE'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tax Calculator</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <link rel="stylesheet" href="capstone.css">
 </head>
 
 <body class="container-fluid">
@@ -59,9 +88,6 @@ if (!isset($_SESSION['TAX_TYPE'])) {
 
   <div class="row justify-content-center align-items-center mt-5">
     <?php
-    printLayout($TAX_TYPE)
-    ?>
-    <?php
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
       if (empty($_POST[$_SESSION['FUNCTIONS']["F7"]])) { //logout
@@ -75,13 +101,22 @@ if (!isset($_SESSION['TAX_TYPE'])) {
       } else if (empty($_POST[$_SESSION['FUNCTIONS']["F3"]])) {
         clearTax();
       } else if (empty($_POST[$_SESSION['FUNCTIONS']["F2"]])) {
-        computeTax($TAX_TYPE);
+        computeTax($_SESSION['TAX_TYPE']);
       } else if (empty($_POST[$_SESSION['FUNCTIONS']["F1"]])) {
         changeTax();
       }
     } else {
       // printLayout($TAX_TYPE);
     }
+
+    ?>
+
+    <?php
+    $TAX_TYPE = $_SESSION['TAX_TYPE'];
+    printLayout($TAX_TYPE)
+    ?>
+
+    <?php
 
     function printLayout($tax_type)
     {
@@ -94,7 +129,11 @@ if (!isset($_SESSION['TAX_TYPE'])) {
               <div class="card col-12">
                 <div class="card-body row">
                   <div class="row mt-3 align-items-center">
-                    <form method="post" action="homepage.php" id="taxForm">
+                    <form 
+                      method="post" 
+                      action="homepage.php" 
+                      id="taxForm"
+                    >
                       <div class="form row">
                         <div class="col-5">
                           <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
@@ -112,7 +151,206 @@ if (!isset($_SESSION['TAX_TYPE'])) {
                       </div>
                     </form>
                   </div>
-                  
+                  <div class="col-12 card mt-3">
+                    <form 
+                      method="post" 
+                      action="result.php" 
+                      id="computeTax"
+                    >
+                      <div class="row mt-3">
+                        <div class="col-5">
+                          <b>Period of Income</b>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="income_period" value="monthly" id="period_monthly" checked>
+                            <label class="form-check-label" for="period_monthly">
+                              Monthly
+                            </label>
+                          </div>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="income_period" value="annually" id="period_annually">
+                            <label class="form-check-label" for="period_annually">
+                              Annually
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row mt-3 ml-2">
+                        <div class="col-5">
+                          <b>Income (in PHP)</b>
+                        </div>
+                        <div class="col-6">
+                          <div class="input-group mb-3">
+                            <input 
+                            type="text" 
+                            oninput="this.value = this.value.replace(/[^0-9.]/g, \'\').replace(/(\..*?)\..*/g, \'$1\').replace(/^0[^.]/, \'0\');" 
+                            class="form-control"  
+                            placeholder="Income" 
+                            aria-label="income"
+                            aria-describedby="basic-addon1"
+                            name="income_value"
+                            id="income_value"
+                          >
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row justify-content-center">
+                        <div class="col-2">
+                          <div class="input-group mb-3">
+                            <input 
+                              type="submit" 
+                              class="btn btn-dark" 
+                              value="Submit" 
+                              name="compute_tax"
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> 
+          <div class="col-5 m-3">
+            <div class="row mt-4">
+              <div class="card col-12">
+                <div class="card-body row mt-3">
+                  <div class="col-4">
+                    <p><b>Period of Income</b></p>
+                  </div>
+                  <div class="col-6">
+                    <p>The period of your indicated income</p>
+                  </div>
+                  <div class="col-4">
+                    <p><b>Income (in PHP)</b></p>
+                  </div>
+                  <div class="col-6">
+                    <p>The amount of your income in PHP</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ');
+      } else if ($tax_type == "capital_gains") {
+        echo ('
+          <div class="col-5 m-3">
+            <div class="row mt-4">
+              <div class="card col-12">
+                <div class="card-body row">
+                  <div class="row mt-3 align-items-center">
+                    <form method="post" action="homepage.php" id="taxForm">
+                      <div class="form row">
+                        <div class="col-5">
+                          <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
+                        </div>
+                        <div class="col-6">
+                          <select class="form-control" name="change_tax" id="tax_type">
+                            <option value="capital_gains">Capital Gains Tax</option>
+                            <option value="estate">Estate Tax</option>
+                            <option value="income">Income Tax</option>
+                            <option value="percentage">Percentage Tax</option>
+                            <option value="value-added">Value-Added Tax</option>
+                            <option value="witholding">Witholding Tax</option>
+                          </select>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-5">
+                      <b>Period of Income</b>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                          Monthly
+                        </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Yearly
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-5">
+                      <b>Income (in PHP)</b>
+                    </div>
+                    <div class="col-6">
+                      <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3 mb-3">
+                    <div class="col-5">
+                      <b>Government Employed</b>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                          Yes (GSIS)
+                        </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          No (SSS)
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> 
+          <div class="col-5 m-3">
+            <div class="row mt-4">
+              <div class="card col-12">
+                <div class="card-body row mt-3">
+                  <div class="col-4">
+                    <p><b>CGT Base</b></p>
+                  </div>
+                  <div class="col-6">
+                    <p>The highest value of presumed</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ');
+      } else if ($tax_type == "estate") {
+        echo ('
+          <div class="col-5 m-3">
+            <div class="row mt-4">
+              <div class="card col-12">
+                <div class="card-body row">
+                  <div class="row mt-3 align-items-center">
+                    <form method="post" action="homepage.php" id="taxForm">
+                      <div class="form row">
+                        <div class="col-5">
+                          <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
+                        </div>
+                        <div class="col-6">
+                          <select class="form-control" name="change_tax" id="tax_type">
+                            <option value="estate">Estate Tax</option>
+                            <option value="capital_gains">Capital Gains Tax</option>
+                            <option value="income">Income Tax</option>
+                            <option value="percentage">Percentage Tax</option>
+                            <option value="value-added">Value-Added Tax</option>
+                            <option value="witholding">Witholding Tax</option>
+                          </select>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
                   <div class="row mt-3">
                     <div class="col-5">
                       <b>Period of Income</b>
@@ -192,525 +430,317 @@ if (!isset($_SESSION['TAX_TYPE'])) {
             </div>
           </div>
         ');
-      } else if ($tax_type == "capital_gains") {
-        echo ('
-        <div class="col-5 m-3">
-          <div class="row mt-4">
-            <div class="card col-12">
-              <div class="card-body row">
-                <div class="row mt-3 align-items-center">
-                  <form method="post" action="homepage.php" id="taxForm">
-                    <div class="form row">
-                      <div class="col-5">
-                        <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
-                      </div>
-                      <div class="col-6">
-                        <select class="form-control" name="change_tax" id="tax_type">
-                          <option value="capital_gains">Capital Gains Tax</option>
-                          <option value="estate">Estate Tax</option>
-                          <option value="income">Income Tax</option>
-                          <option value="percentage">Percentage Tax</option>
-                          <option value="value-added">Value-Added Tax</option>
-                          <option value="witholding">Witholding Tax</option>
-                        </select>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-                <div class="row mt-3">
-                  <div class="col-5">
-                    <b>Period of Income</b>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        Monthly
-                      </label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        Yearly
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div class="row mt-3">
-                  <div class="col-5">
-                    <b>Income (in PHP)</b>
-                  </div>
-                  <div class="col-6">
-                    <div class="input-group mb-3">
-                      <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1">
-                    </div>
-                  </div>
-                </div>
-                <div class="row mt-3 mb-3">
-                  <div class="col-5">
-                    <b>Government Employed</b>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        Yes (GSIS)
-                      </label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        No (SSS)
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> 
-        <div class="col-5 m-3">
-          <div class="row mt-4">
-            <div class="card col-12">
-              <div class="card-body row mt-3">
-                <div class="col-4">
-                  <p><b>Period of Income</b></p>
-                </div>
-                <div class="col-6">
-                  <p>The period of your indicated income</p>
-                </div>
-                <div class="col-4">
-                  <p><b>Income (in PHP)</b></p>
-                </div>
-                <div class="col-6">
-                  <p>The amount of your income in PHP</p>
-                </div>
-                <div class="col-4">
-                  <p><b>Government Employment</b></p>
-                </div>
-                <div class="col-6">
-                  <p>If you are a government employee</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        ');
-      } else if ($tax_type == "estate") {
-        echo ('
-        <div class="col-5 m-3">
-          <div class="row mt-4">
-            <div class="card col-12">
-              <div class="card-body row">
-                <div class="row mt-3 align-items-center">
-                  <form method="post" action="homepage.php" id="taxForm">
-                    <div class="form row">
-                      <div class="col-5">
-                        <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
-                      </div>
-                      <div class="col-6">
-                        <select class="form-control" name="change_tax" id="tax_type">
-                          <option value="estate">Estate Tax</option>
-                          <option value="capital_gains">Capital Gains Tax</option>
-                          <option value="income">Income Tax</option>
-                          <option value="percentage">Percentage Tax</option>
-                          <option value="value-added">Value-Added Tax</option>
-                          <option value="witholding">Witholding Tax</option>
-                        </select>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-                <div class="row mt-3">
-                  <div class="col-5">
-                    <b>Period of Income</b>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        Monthly
-                      </label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        Yearly
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div class="row mt-3">
-                  <div class="col-5">
-                    <b>Income (in PHP)</b>
-                  </div>
-                  <div class="col-6">
-                    <div class="input-group mb-3">
-                      <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1">
-                    </div>
-                  </div>
-                </div>
-                <div class="row mt-3 mb-3">
-                  <div class="col-5">
-                    <b>Government Employed</b>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        Yes (GSIS)
-                      </label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        No (SSS)
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> 
-        <div class="col-5 m-3">
-          <div class="row mt-4">
-            <div class="card col-12">
-              <div class="card-body row mt-3">
-                <div class="col-4">
-                  <p><b>Period of Income</b></p>
-                </div>
-                <div class="col-6">
-                  <p>The period of your indicated income</p>
-                </div>
-                <div class="col-4">
-                  <p><b>Income (in PHP)</b></p>
-                </div>
-                <div class="col-6">
-                  <p>The amount of your income in PHP</p>
-                </div>
-                <div class="col-4">
-                  <p><b>Government Employment</b></p>
-                </div>
-                <div class="col-6">
-                  <p>If you are a government employee</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        ');
       } else if ($tax_type == "percentage") {
         echo ('
-        <div class="col-5 m-3">
-          <div class="row mt-4">
-            <div class="card col-12">
-              <div class="card-body row">
-                <div class="row mt-3 align-items-center">
-                  <form method="post" action="homepage.php" id="taxForm">
-                    <div class="form row">
-                      <div class="col-5">
-                        <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
+          <div class="col-5 m-3">
+            <div class="row mt-4">
+              <div class="card col-12">
+                <div class="card-body row">
+                  <div class="row mt-3 align-items-center">
+                    <form method="post" action="homepage.php" id="taxForm">
+                      <div class="form row">
+                        <div class="col-5">
+                          <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
+                        </div>
+                        <div class="col-6">
+                          <select class="form-control" name="change_tax" id="tax_type">
+                            <option value="percentage">Percentage Tax</option>
+                            <option value="capital_gains">Capital Gains Tax</option>
+                            <option value="estate">Estate Tax</option>
+                            <option value="income">Income Tax</option>
+                            <option value="value-added">Value-Added Tax</option>
+                            <option value="witholding">Witholding Tax</option>
+                          </select>
+                        </div>
                       </div>
-                      <div class="col-6">
-                        <select class="form-control" name="change_tax" id="tax_type">
-                          <option value="percentage">Percentage Tax</option>
-                          <option value="capital_gains">Capital Gains Tax</option>
-                          <option value="estate">Estate Tax</option>
-                          <option value="income">Income Tax</option>
-                          <option value="value-added">Value-Added Tax</option>
-                          <option value="witholding">Witholding Tax</option>
-                        </select>
+                    </form>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-5">
+                      <b>Period of Income</b>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                          Monthly
+                        </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Yearly
+                        </label>
                       </div>
                     </div>
-                  </form>
-                </div>
-                <div class="row mt-3">
-                  <div class="col-5">
-                    <b>Period of Income</b>
                   </div>
-                  <div class="col-6">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        Monthly
-                      </label>
+                  <div class="row mt-3">
+                    <div class="col-5">
+                      <b>Income (in PHP)</b>
                     </div>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        Yearly
-                      </label>
+                    <div class="col-6">
+                      <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1">
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="row mt-3">
-                  <div class="col-5">
-                    <b>Income (in PHP)</b>
-                  </div>
-                  <div class="col-6">
-                    <div class="input-group mb-3">
-                      <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1">
+                  <div class="row mt-3 mb-3">
+                    <div class="col-5">
+                      <b>Government Employed</b>
                     </div>
-                  </div>
-                </div>
-                <div class="row mt-3 mb-3">
-                  <div class="col-5">
-                    <b>Government Employed</b>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        Yes (GSIS)
-                      </label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        No (SSS)
-                      </label>
+                    <div class="col-6">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                          Yes (GSIS)
+                        </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          No (SSS)
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div> 
-        <div class="col-5 m-3">
-          <div class="row mt-4">
-            <div class="card col-12">
-              <div class="card-body row mt-3">
-                <div class="col-4">
-                  <p><b>Period of Income</b></p>
-                </div>
-                <div class="col-6">
-                  <p>The period of your indicated income</p>
-                </div>
-                <div class="col-4">
-                  <p><b>Income (in PHP)</b></p>
-                </div>
-                <div class="col-6">
-                  <p>The amount of your income in PHP</p>
-                </div>
-                <div class="col-4">
-                  <p><b>Government Employment</b></p>
-                </div>
-                <div class="col-6">
-                  <p>If you are a government employee</p>
+          </div> 
+          <div class="col-5 m-3">
+            <div class="row mt-4">
+              <div class="card col-12">
+                <div class="card-body row mt-3">
+                  <div class="col-4">
+                    <p><b>Period of Income</b></p>
+                  </div>
+                  <div class="col-6">
+                    <p>The period of your indicated income</p>
+                  </div>
+                  <div class="col-4">
+                    <p><b>Income (in PHP)</b></p>
+                  </div>
+                  <div class="col-6">
+                    <p>The amount of your income in PHP</p>
+                  </div>
+                  <div class="col-4">
+                    <p><b>Government Employment</b></p>
+                  </div>
+                  <div class="col-6">
+                    <p>If you are a government employee</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
         ');
       } else if ($tax_type == "value-added") {
         echo ('
-        <div class="col-5 m-3">
-          <div class="row mt-4">
-            <div class="card col-12">
-              <div class="card-body row">
-                <div class="row mt-3 align-items-center">
-                  <form method="post" action="homepage.php" id="taxForm">
-                    <div class="form row">
-                      <div class="col-5">
-                        <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
+          <div class="col-5 m-3">
+            <div class="row mt-4">
+              <div class="card col-12">
+                <div class="card-body row">
+                  <div class="row mt-3 align-items-center">
+                    <form method="post" action="homepage.php" id="taxForm">
+                      <div class="form row">
+                        <div class="col-5">
+                          <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
+                        </div>
+                        <div class="col-6">
+                          <select class="form-control" name="change_tax" id="tax_type">
+                            <option value="value-added">Value-Added Tax</option>
+                            <option value="capital_gains">Capital Gains Tax</option>
+                            <option value="estate">Estate Tax</option>
+                            <option value="income">Income Tax</option>
+                            <option value="percentage">Percentage Tax</option>
+                            <option value="witholding">Witholding Tax</option>
+                          </select>
+                        </div>
                       </div>
-                      <div class="col-6">
-                        <select class="form-control" name="change_tax" id="tax_type">
-                          <option value="value-added">Value-Added Tax</option>
-                          <option value="capital_gains">Capital Gains Tax</option>
-                          <option value="estate">Estate Tax</option>
-                          <option value="income">Income Tax</option>
-                          <option value="percentage">Percentage Tax</option>
-                          <option value="witholding">Witholding Tax</option>
-                        </select>
+                    </form>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-5">
+                      <b>Period of Income</b>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                          Monthly
+                        </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Yearly
+                        </label>
                       </div>
                     </div>
-                  </form>
-                </div>
-                <div class="row mt-3">
-                  <div class="col-5">
-                    <b>Period of Income</b>
                   </div>
-                  <div class="col-6">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        Monthly
-                      </label>
+                  <div class="row mt-3">
+                    <div class="col-5">
+                      <b>Income (in PHP)</b>
                     </div>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        Yearly
-                      </label>
+                    <div class="col-6">
+                      <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1">
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="row mt-3">
-                  <div class="col-5">
-                    <b>Income (in PHP)</b>
-                  </div>
-                  <div class="col-6">
-                    <div class="input-group mb-3">
-                      <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1">
+                  <div class="row mt-3 mb-3">
+                    <div class="col-5">
+                      <b>Government Employed</b>
                     </div>
-                  </div>
-                </div>
-                <div class="row mt-3 mb-3">
-                  <div class="col-5">
-                    <b>Government Employed</b>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        Yes (GSIS)
-                      </label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        No (SSS)
-                      </label>
+                    <div class="col-6">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                          Yes (GSIS)
+                        </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          No (SSS)
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div> 
-        <div class="col-5 m-3">
-          <div class="row mt-4">
-            <div class="card col-12">
-              <div class="card-body row mt-3">
-                <div class="col-4">
-                  <p><b>Period of Income</b></p>
-                </div>
-                <div class="col-6">
-                  <p>The period of your indicated income</p>
-                </div>
-                <div class="col-4">
-                  <p><b>Income (in PHP)</b></p>
-                </div>
-                <div class="col-6">
-                  <p>The amount of your income in PHP</p>
-                </div>
-                <div class="col-4">
-                  <p><b>Government Employment</b></p>
-                </div>
-                <div class="col-6">
-                  <p>If you are a government employee</p>
+          </div> 
+          <div class="col-5 m-3">
+            <div class="row mt-4">
+              <div class="card col-12">
+                <div class="card-body row mt-3">
+                  <div class="col-4">
+                    <p><b>Period of Income</b></p>
+                  </div>
+                  <div class="col-6">
+                    <p>The period of your indicated income</p>
+                  </div>
+                  <div class="col-4">
+                    <p><b>Income (in PHP)</b></p>
+                  </div>
+                  <div class="col-6">
+                    <p>The amount of your income in PHP</p>
+                  </div>
+                  <div class="col-4">
+                    <p><b>Government Employment</b></p>
+                  </div>
+                  <div class="col-6">
+                    <p>If you are a government employee</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
         ');
       } else if ($tax_type == "witholding") {
         echo ('
-        <div class="col-5 m-3">
-          <div class="row mt-4">
-            <div class="card col-12">
-              <div class="card-body row">
-                <div class="row mt-3 align-items-center">
-                  <form method="post" action="homepage.php" id="taxForm">
-                    <div class="form row">
-                      <div class="col-5">
-                        <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
+          <div class="col-5 m-3">
+            <div class="row mt-4">
+              <div class="card col-12">
+                <div class="card-body row">
+                  <div class="row mt-3 align-items-center">
+                    <form method="post" action="homepage.php" id="taxForm">
+                      <div class="form row">
+                        <div class="col-5">
+                          <b><label for="tax_type" class="col-form-label">Select Tax Type:</label></b>
+                        </div>
+                        <div class="col-6">
+                          <select class="form-control" name="change_tax" id="tax_type">
+                            <option value="witholding">Witholding Tax</option>
+                            <option value="capital_gains">Capital Gains Tax</option>
+                            <option value="estate">Estate Tax</option>
+                            <option value="income">Income Tax</option>
+                            <option value="percentage">Percentage Tax</option>
+                            <option value="value-added">Value-Added Tax</option>
+                          </select>
+                        </div>
                       </div>
-                      <div class="col-6">
-                        <select class="form-control" name="change_tax" id="tax_type">
-                          <option value="witholding">Witholding Tax</option>
-                          <option value="capital_gains">Capital Gains Tax</option>
-                          <option value="estate">Estate Tax</option>
-                          <option value="income">Income Tax</option>
-                          <option value="percentage">Percentage Tax</option>
-                          <option value="value-added">Value-Added Tax</option>
-                        </select>
+                    </form>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-5">
+                      <b>Period of Income</b>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                          Monthly
+                        </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Yearly
+                        </label>
                       </div>
                     </div>
-                  </form>
-                </div>
-                <div class="row mt-3">
-                  <div class="col-5">
-                    <b>Period of Income</b>
                   </div>
-                  <div class="col-6">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        Monthly
-                      </label>
+                  <div class="row mt-3">
+                    <div class="col-5">
+                      <b>Income (in PHP)</b>
                     </div>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        Yearly
-                      </label>
+                    <div class="col-6">
+                      <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1">
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="row mt-3">
-                  <div class="col-5">
-                    <b>Income (in PHP)</b>
-                  </div>
-                  <div class="col-6">
-                    <div class="input-group mb-3">
-                      <input type="text" class="form-control" placeholder="Income" aria-label="income" aria-describedby="basic-addon1">
+                  <div class="row mt-3 mb-3">
+                    <div class="col-5">
+                      <b>Government Employed</b>
                     </div>
-                  </div>
-                </div>
-                <div class="row mt-3 mb-3">
-                  <div class="col-5">
-                    <b>Government Employed</b>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        Yes (GSIS)
-                      </label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        No (SSS)
-                      </label>
+                    <div class="col-6">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                          Yes (GSIS)
+                        </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          No (SSS)
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div> 
-        <div class="col-5 m-3">
-          <div class="row mt-4">
-            <div class="card col-12">
-              <div class="card-body row mt-3">
-                <div class="col-4">
-                  <p><b>Period of Income</b></p>
-                </div>
-                <div class="col-6">
-                  <p>The period of your indicated income</p>
-                </div>
-                <div class="col-4">
-                  <p><b>Income (in PHP)</b></p>
-                </div>
-                <div class="col-6">
-                  <p>The amount of your income in PHP</p>
-                </div>
-                <div class="col-4">
-                  <p><b>Government Employment</b></p>
-                </div>
-                <div class="col-6">
-                  <p>If you are a government employee</p>
+          </div> 
+          <div class="col-5 m-3">
+            <div class="row mt-4">
+              <div class="card col-12">
+                <div class="card-body row mt-3">
+                  <div class="col-4">
+                    <p><b>Period of Income</b></p>
+                  </div>
+                  <div class="col-6">
+                    <p>The period of your indicated income</p>
+                  </div>
+                  <div class="col-4">
+                    <p><b>Income (in PHP)</b></p>
+                  </div>
+                  <div class="col-6">
+                    <p>The amount of your income in PHP</p>
+                  </div>
+                  <div class="col-4">
+                    <p><b>Government Employment</b></p>
+                  </div>
+                  <div class="col-6">
+                    <p>If you are a government employee</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
         ');
       }
     }
@@ -721,9 +751,7 @@ if (!isset($_SESSION['TAX_TYPE'])) {
       // reloadPage();
     }
 
-    function computeTax($tax_type)
-    {
-    }
+
 
     function clearTax()
     {
