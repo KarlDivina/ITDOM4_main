@@ -31,13 +31,7 @@ function debug_to_console($data, $context = 'Debug in Console')
     <div class="col-12">
       <ul class="nav nav-pills justify-content-center">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="homepage.php">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="about.php" style="color: black">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="learnmore.php" style="color: black">Learn More</a>
+          <a class="nav-link active" aria-current="page" href="homepage.php">Compute your tax</a>
         </li>
       </ul>
     </div>
@@ -47,20 +41,8 @@ function debug_to_console($data, $context = 'Debug in Console')
     <?php
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-      if (!empty($_POST[$_SESSION['FUNCTIONS']["F7"]])) { //logout
-        logoutUser();
-      } else if (!empty($_POST[$_SESSION['FUNCTIONS']["F6"]])) {
-        registerUser();
-      } else if (!empty($_POST[$_SESSION['FUNCTIONS']["F5"]])) {
-        checkUser();
-      } else if (!empty($_POST[$_SESSION['FUNCTIONS']["F4"]])) {
-        loginUser();
-      } else if (!empty($_POST[$_SESSION['FUNCTIONS']["F3"]])) {
-        clearTax();
-      } else if (!empty($_POST[$_SESSION['FUNCTIONS']["F2"]])) {
+      if (!empty($_POST[$_SESSION['FUNCTIONS']["F2"]])) {
         computeTax($_SESSION['TAX_TYPE']);
-      } else if (!empty($_POST[$_SESSION['FUNCTIONS']["F1"]])) {
-        changeTax();
       }
     } else {
       // printLayout($TAX_TYPE);
@@ -68,8 +50,6 @@ function debug_to_console($data, $context = 'Debug in Console')
 
     function printLayout($tax_type)
     {
-      //  = $_SESSION['TAX_TYPE'];
-
       if ($tax_type == "income") {
         echo ('
           <div class="col-5 m-3">
@@ -197,6 +177,9 @@ function debug_to_console($data, $context = 'Debug in Console')
                   </div>
                   <div class="col-8">
                     <p> And a <b>final take-home amount</b> of <b>₱' . $_SESSION['FINAL_INCOME'] . '</b></p>
+                  </div>
+                  <div class="col-4">
+                    <a href="#"><i>How was this calculated?</i></a>
                   </div>
                 </div>
               </div>
@@ -388,12 +371,6 @@ function debug_to_console($data, $context = 'Debug in Console')
       }
     }
 
-    function changeTax()
-    {
-      // $_SESSION['TAX_TYPE'] = $_POST['change_tax'];
-      // reloadPage();
-    }
-
     function computeTax($tax_type)
     {
       $RATES = $_SESSION['RATES'];
@@ -523,7 +500,6 @@ function debug_to_console($data, $context = 'Debug in Console')
 
     function computeSSS_REGULAR($MONTHLY, $FLOOR, $CEILING, $MIN, $MAX, $CUTOFF, $RANGE, $INCREASE)
     {
-
       if ($MONTHLY >= $CUTOFF) {
 
         return ($MAX);
@@ -541,7 +517,6 @@ function debug_to_console($data, $context = 'Debug in Console')
 
     function computeSSS_MPF($MONTHLY, $FLOOR, $CEILING, $MIN, $MAX, $CUTOFF, $RANGE, $INCREASE)
     {
-
       if ($MONTHLY >= $CUTOFF) {
         return ($MAX);
       } else if ($MONTHLY <= $FLOOR) {
@@ -556,109 +531,32 @@ function debug_to_console($data, $context = 'Debug in Console')
       }
     }
 
-    function clearTax()
-    {
-    }
-
-    function loginUser()
-    {
-    }
-    function registerUser()
-    {
-    }
-    function checkUser()
-    {
-    }
-    function logoutUser()
-    {
-    }
-
     function reloadPage()
     {
       echo ("<meta http-equiv='refresh' content='1'>");
     }
-
-
-
-    // code graveyard
-
-    // <div class="row mt-3">
-    //   <div class="col-5">
-    //     <b>Number of Dependents</b>
-    //   </div>
-    //   <div class="col-6">
-    //     <div class="form-check form-check-inline">
-    //       <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-    //       <label class="form-check-label" for="flexRadioDefault1">
-    //         0
-    //       </label>
-    //     </div>
-    //     <div class="form-check form-check-inline">
-    //       <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-    //       <label class="form-check-label" for="flexRadioDefault2">
-    //         1
-    //       </label>
-    //     </div>
-    //     <div class="form-check form-check-inline">
-    //       <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-    //       <label class="form-check-label" for="flexRadioDefault2">
-    //         2
-    //       </label>
-    //     </div>
-    //     <div class="form-check form-check-inline">
-    //       <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-    //       <label class="form-check-label" for="flexRadioDefault2">
-    //         3 or more
-    //       </label>
-    //     </div>
-    //   </div>
-    // </div>
-
-    // dropdown button for tax type
-    // <div class="col-5">
-    //   <b>Type of Tax:</b>
-    // </div>
-    // <div class="col-6">
-    //   <div class="dropdown">
-    //     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-    //       Income Tax
-    //     </button>
-    //     <ul class="dropdown-menu">
-    //         <li><a class="dropdown-item" href="#">Donor's Tax</a></li>
-    //         <li><a class="dropdown-item" href="#">Excise Tax</a></li> 
-    //       <li><a class="dropdown-item" href="#">Sales Tax</a></li>
-    //       <li><a class="dropdown-item" href="#">Capital Gains Tax</a></li>
-    //       <li><a class="dropdown-item" href="#">Estate Tax</a></li>
-    //       <li><a class="dropdown-item" href="#">Income Tax</a></li>
-    //       <li><a class="dropdown-item" href="#">Percentage Tax</a></li>
-    //       <li><a class="dropdown-item" href="#">Value-Added Tax</a></li>
-    //       <li><a class="dropdown-item" href="#">Witholding Tax</a></li>
-    //     </ul>
-    //   </div>
-    // </div>
-
     ?>
-
-    <?php
-    // $TAX_TYPE = $_SESSION['TAX_TYPE'];
-    // printLayout($TAX_TYPE)
-    ?>
+  </div>
 
 
-
-
-  </div>s
-
-  <div class="row card d-flex justify-content-around" style="width: inherit; bottom: 0; position: fixed;">
-    <div class="footer">
-      <div class="container">
-        <p>&copy; 2023 Divina & Sison</p>
-        <a href="terms.php">Terms and Conditions</a>
-        <span class="mx-2">|</span>
-        <a href="privacy.php">Privacy Policy</a>
-      </div>
+  <div class="footer row d-flex justify-content-between" style="width: inherit; bottom: 0; position: fixed; margin-bottom: -1em;">
+    <div class="col-2">
+      <strong>
+        <p><a href="terms.php" style="text-decoration: none; color: white;">Terms and Conditions</a></p>
+      </strong>
+    </div>
+    <div class="col-8">
+      <strong>
+        <p>Divina & Sison &copy; 2023
+      </strong>
+    </div>
+    <div class="col-2">
+      <strong>
+        <p><a href="privacy.php" style="text-decoration: none; color: white;">Privacy Policy</a></p>
+      </strong>
     </div>
   </div>
+
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>

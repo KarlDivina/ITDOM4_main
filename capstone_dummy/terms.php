@@ -60,12 +60,12 @@
         <li class="nav-item">
           <a class="nav-link" aria-current="page" href="homepage.php" style="color: black">Home</a>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link" href="about.php" style="color: black">About</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="learnmore.php" style="color: black">Learn More</a>
-        </li>
+        </li> -->
       </ul>
     </div>
   </div>

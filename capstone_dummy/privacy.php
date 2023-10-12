@@ -64,12 +64,12 @@
         <li class="nav-item">
           <a class="nav-link" aria-current="page" href="homepage.php" style="color: black">Home</a>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link" href="about.php" style="color: black">About</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="learnmore.php" style="color: black">Learn More</a>
-        </li>
+        </li> -->
       </ul>
     </div>
   </div>
@@ -79,7 +79,7 @@
       <div class="card">
         <div class="card-body terms-and-conditions">
           <p><strong>Privacy Policy</strong></p>
-          This Privacy Policy is designed to help you understand how [Your Website Name] ("we," "our," or "us") collects, uses, discloses, and protects your personal information when you use our tax calculator website. We are committed to ensuring the privacy and security of your information. By using our website, you agree to the terms outlined in this policy. If you do not agree with our practices, please do not use our website.
+          This Privacy Policy is designed to help you understand how PH Tax Calculator ("we," "our," or "us") collects, uses, discloses, and protects your personal information when you use our tax calculator website. We are committed to ensuring the privacy and security of your information. By using our website, you agree to the terms outlined in this policy. If you do not agree with our practices, please do not use our website.
 
           <p><strong>Information We Collect:</strong></p>
           <p>1.1. Personal Information: When you use our website, we may collect personal information that can identify you, such as your name, email address, and contact details. We collect this information when you voluntarily provide it to us through contact forms, email, or other means.</p>
@@ -100,24 +100,24 @@
 
           <p>3.3. Business Transfers: In the event that our website is acquired by or merged with another company, your information may be transferred as part of the transaction. We will notify you of such changes.</p>
 
-          <p><strong>Cookies and Tracking Technologies:</strong></p>
-          <p>We use cookies and similar tracking technologies to improve your experience on our website. You can manage your preferences for these technologies through your browser settings. For more information, please review our <a href="#">Cookie Policy</a> available on our website.</p>
+          <!-- <p><strong>Cookies and Tracking Technologies:</strong></p>
+          <p>We use cookies and similar tracking technologies to improve your experience on our website. You can manage your preferences for these technologies through your browser settings. For more information, please review our <a href="#">Cookie Policy</a> available on our website.</p> -->
 
           <p><strong>Security:</strong></p>
           <p>We take reasonable measures to protect your information from unauthorized access or disclosure. However, no data transmission over the internet can be guaranteed as 100% secure. Please be cautious when sharing personal information online.</p>
 
           <p><strong>Your Privacy Choices:</strong></p>
-          <p>You have the right to access, update, or delete your personal information. You can also opt out of receiving promotional communications from us. To exercise these rights or for any privacy-related concerns, please contact us at [Your Contact Email].</p>
+          <p>You have the right to access, update, or delete your personal information. You can also opt out of receiving promotional communications from us. To exercise these rights or for any privacy-related concerns, please contact us at divinakarlangelo@gmail.com or kylemsison@gmail.com.</p>
 
           <p><strong>Changes to this Privacy Policy:</strong></p>
           <p>We reserve the right to update this Privacy Policy from time to time. When we make changes, we will update the "Last Updated" date at the top of this policy. We encourage you to review this policy periodically to stay informed about how we are protecting your information.</p>
 
           <p><strong>Contact Us:</strong></p>
-          <p>If you have any questions or concerns about this Privacy Policy or our privacy practices, please contact us at [Your Contact Information].
+          <p>If you have any questions or concerns about this Privacy Policy or our privacy practices, please contact us at divinakarlangelo@gmail.com or kylemsison@gmail.com.
 
             By using our website, you signify your agreement to this Privacy Policy. If you do not agree with this policy, please do not use our website.
 
-            [Your Website Name] is committed to protecting your privacy, and we thank you for entrusting us with your information.</p>
+            PH Tax Calculator is committed to protecting your privacy, and we thank you for entrusting us with your information.</p>
         </div>
       </div>
     </div>

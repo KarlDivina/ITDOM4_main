@@ -75,13 +75,7 @@ $_SESSION['SSS_VARIABLES'] = array(
     <div class="col-12">
       <ul class="nav nav-pills justify-content-center">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="homepage.php">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="about.php" style="color: black">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="learnmore.php" style="color: black">Learn More</a>
+          <a class="nav-link active" aria-current="page" href="homepage.php">Compute your tax</a>
         </li>
       </ul>
     </div>
@@ -91,20 +85,8 @@ $_SESSION['SSS_VARIABLES'] = array(
     <?php
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-      if (empty($_POST[$_SESSION['FUNCTIONS']["F7"]])) { //logout
-        logoutUser();
-      } else if (empty($_POST[$_SESSION['FUNCTIONS']["F6"]])) {
-        registerUser();
-      } else if (empty($_POST[$_SESSION['FUNCTIONS']["F5"]])) {
-        checkUser();
-      } else if (empty($_POST[$_SESSION['FUNCTIONS']["F4"]])) {
-        loginUser();
-      } else if (empty($_POST[$_SESSION['FUNCTIONS']["F3"]])) {
-        clearTax();
-      } else if (empty($_POST[$_SESSION['FUNCTIONS']["F2"]])) {
+      if (empty($_POST[$_SESSION['FUNCTIONS']["F2"]])) {
         computeTax($_SESSION['TAX_TYPE']);
-      } else if (empty($_POST[$_SESSION['FUNCTIONS']["F1"]])) {
-        changeTax();
       }
     } else {
       // printLayout($TAX_TYPE);
@@ -422,31 +404,6 @@ $_SESSION['SSS_VARIABLES'] = array(
       }
     }
 
-    function changeTax()
-    {
-      // $_SESSION['TAX_TYPE'] = $_POST['change_tax'];
-      // reloadPage();
-    }
-
-
-
-    function clearTax()
-    {
-    }
-
-    function loginUser()
-    {
-    }
-    function registerUser()
-    {
-    }
-    function checkUser()
-    {
-    }
-    function logoutUser()
-    {
-    }
-
     function reloadPage()
     {
       echo ("<meta http-equiv='refresh' content='1'>");
@@ -455,16 +412,24 @@ $_SESSION['SSS_VARIABLES'] = array(
 
   </div>
 
-  <div class="row card d-flex justify-content-around" style="width: inherit; bottom: 0; position: fixed;">
-    <div class="footer">
-      <div class="container">
-        <p>&copy; 2023 Divina & Sison</p>
-        <a href="terms.php">Terms and Conditions</a>
-        <span class="mx-2">|</span>
-        <a href="privacy.php">Privacy Policy</a>
-      </div>
+  <div class="footer row d-flex justify-content-between" style="width: inherit; bottom: 0; position: fixed; margin-bottom: -1em;">
+    <div class="col-2">
+      <strong>
+        <p><a href="terms.php" style="text-decoration: none; color: white;">Terms and Conditions</a></p>
+      </strong>
+    </div>
+    <div class="col-8">
+      <strong>
+        <p>Divina & Sison &copy; 2023
+      </strong>
+    </div>
+    <div class="col-2">
+      <strong>
+        <p><a href="privacy.php" style="text-decoration: none; color: white;">Privacy Policy</a></p>
+      </strong>
     </div>
   </div>
+
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
