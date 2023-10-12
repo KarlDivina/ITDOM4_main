@@ -24,10 +24,6 @@ body {
 .content {
   flex-grow: 1;
   padding: 20px;
-  border: 1px solid #ffa500;
-  /* Add a border around the content */
-  border-radius: 10px;
-  /* Optional: Add rounded corners to the border */
 }
 
 .footer {

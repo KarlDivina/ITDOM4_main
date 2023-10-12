@@ -9,82 +9,38 @@
 </head>
 
 <body class="container-fluid">
-  <div class="row p-3" style="background-color:#ffa500; top: 0;">
+  <div class="row py-2" style="background-color:#ffa500; top: 0;">
     <div class="col-12">
-      <ul class="nav nav-pills justify-content-center">
+      <ul class="nav nav-underline justify-content-center">
         <li class="nav-item">
-          <a class="nav-link" href="homepage.php" style="color: black">Compute your tax</a>
+          <a class="nav-link" aria-current="page" href="homepage.php" style="font-weight: bold; color: white;">Compute your tax</a>
         </li>
-        <!-- <li class="nav-item">
-          <a class="nav-link" href="about.php" style="color: black">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="learnmore.php">Learn More</a>
-        </li> -->
       </ul>
     </div>
   </div>
 
   <div class="row mt-3">
     <div class="col-4"></div>
+  </div>
+
+  <div class="footer row d-flex justify-content-between" style="width: inherit; bottom: 0; position: fixed; margin-bottom: -1em;">
+    <div class="col-2">
+      <strong>
+        <p><a href="terms.php" style="text-decoration: none; color: white;">Terms and Conditions</a></p>
+      </strong>
+    </div>
     <div class="col-8">
-      <div class="row justify-content-center">
-        <div class="col-5">
-          <div class="card">
-            <h5 class="card-header">TRENDING</h5>
-            <div class="card-body">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Article title for currently trending article</h6>
-              <p class="card-text" style="text-align: justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eleifend metus leo, sit amet rutrum felis dictum a. Maecenas ac ligula nunc. Suspendisse nisi tortor, lobortis rutrum velit eu, ullamcorper auctor mauris. Pellentesque mauris dui, egestas id arcu vel, rutrum viverra odio. Nam id magna lectus. Fusce varius ante ante. Nam efficitur, odio vitae rhoncus interdum, odio mi dignissim leo, sit amet posuere nisl dui quis dui.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-5">
-          <div class="card">
-            <h5 class="card-header">TOP OF THE MONTH</h5>
-            <div class="card-body">
-              <h6 class="card-subtitle mb-2 text-body-secondary">Article title for current Top of the Month article</h6>
-              <p class="card-text" style="text-align: justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eleifend metus leo, sit amet rutrum felis dictum a. Maecenas ac ligula nunc. Suspendisse nisi tortor, lobortis rutrum velit eu, ullamcorper auctor mauris. Pellentesque mauris dui, egestas id arcu vel, rutrum viverra odio. Nam id magna lectus. Fusce varius ante ante. Nam efficitur, odio vitae rhoncus interdum, odio mi dignissim leo, sit amet posuere nisl dui quis dui.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row justify-content-center mt-3 mb-2">
-        <div class="col-10">
-          <div class="card ">
-            <h5 class="card-header">ANNOUNCEMENTS</h5>
-            <div class="row justify-content-around p-3">
-              <div class="col-5">
-                <div class="row">
-                  <div class="card col-4" style="height: 11em"></div>
-                  <div class="col-8">
-                    <p style="text-align: justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eleifend metus leo, sit amet rutrum felis dictum a. Maecenas ac ligula nunc. Suspendisse nisi tortor, lobortis rutrum velit eu, ullamcorper auctor mauris. Pellentesque mauris dui, egestas id arcu vel, rutrum viverra odio. Nam id magna lectus. Fusce varius ante.</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-5">
-                <div class="row">
-                  <div class="card col-4" style="height: 11em"></div>
-                  <div class="col-8">
-                    <p style="text-align: justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eleifend metus leo, sit amet rutrum felis dictum a. Maecenas ac ligula nunc. Suspendisse nisi tortor, lobortis rutrum velit eu, ullamcorper auctor mauris. Pellentesque mauris dui, egestas id arcu vel, rutrum viverra odio. Nam id magna lectus. Fusce varius ante.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <strong>
+        <p>Divina & Sison &copy; 2023
+      </strong>
+    </div>
+    <div class="col-2">
+      <strong>
+        <p><a href="privacy.php" style="text-decoration: none; color: white;">Privacy Policy</a></p>
+      </strong>
     </div>
   </div>
 
-  <div class="footer row card d-flex justify-content-around" style="height: 3em; width: inherit; background-color: bisque; bottom: 0; position: fixed;">
-    <div class="card-body col-3 align-self-start" style="left: 0;">Divina & Sison &copy; 2023</div>
-    <div class="card-body col-9 d-flex flex-row-reverse">
-      <div class="row">
-        <!-- <a>Terms and Conditions</a>
-        <a>Privacy Policy</a> -->
-      </div>
-    </div>
-  </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>
 

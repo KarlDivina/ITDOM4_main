@@ -27,11 +27,11 @@ function debug_to_console($data, $context = 'Debug in Console')
 </head>
 
 <body class="container-fluid">
-  <div class="row p-3" style="background-color:#ffa500; top: 0;">
+  <div class="row py-2" style="background-color:#ffa500; top: 0;">
     <div class="col-12">
-      <ul class="nav nav-pills justify-content-center">
+      <ul class="nav nav-underline justify-content-center">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="homepage.php">Compute your tax</a>
+          <a class="nav-link" aria-current="page" href="homepage.php" style="font-weight: bold; color: white;">Compute your tax</a>
         </li>
       </ul>
     </div>

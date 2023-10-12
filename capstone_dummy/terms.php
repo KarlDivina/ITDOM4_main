@@ -6,75 +6,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tax Calculator</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-  <style>
-    body {
-      background-color: #ffe0b2;
-      /* Lighter orange color */
-      margin: 0;
-      padding: 0;
-    }
+  <link rel="stylesheet" href="capstone.css">
 
-    .navbar {
-      background-color: #ffa500;
-      /* Lighter orange color */
-    }
-
-    .navbar a.nav-link {
-      color: #fff;
-    }
-
-    .navbar a.nav-link:hover {
-      color: #ffcc00;
-    }
-
-    .content {
-      min-height: calc(100vh - 120px);
-      padding: 20px;
-    }
-
-    .footer {
-      background-color: #ffa500;
-      /* Lighter orange color for the footer */
-      color: #fff;
-      text-align: center;
-      padding: 10px 0;
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-    }
-
-    /* Style the Terms and Conditions text */
-    .terms-and-conditions {
-      font-family: Arial, sans-serif;
-      font-size: 20px;
-      line-height: 1.6;
-      text-align: justify;
-    }
-  </style>
 </head>
 
-<body>
-  <div class="row p-3" style="background-color:#ffa500; top: 0;">
+<body class="container-fluid">
+  <div class="row py-2" style="background-color:#ffa500; top: 0;">
     <div class="col-12">
-      <ul class="nav nav-pills justify-content-center">
+      <ul class="nav nav-underline justify-content-center">
         <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="homepage.php" style="color: black">Home</a>
+          <a class="nav-link" aria-current="page" href="homepage.php" style="font-weight: bold; color: white;">Compute your tax</a>
         </li>
-        <!-- <li class="nav-item">
-          <a class="nav-link" href="about.php" style="color: black">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="learnmore.php" style="color: black">Learn More</a>
-        </li> -->
       </ul>
     </div>
   </div>
 
   <div class="content">
-    <div class="container mt-4">
+    <div class="container my-2">
       <div class="card">
         <div class="card-body terms-and-conditions">
-          <p><strong>Terms and Conditions</strong></p>
+          <h3 style="text-align: center;"><strong>Terms and Conditions</strong></h3>
           <p>We are Karl Divina and Kyle Sison, students of San Beda College Alabang at Muntinlupa City.
             You can contact us via email at kylemsison@gmail.com or divinakarlangelo@gmail.com, or by mail to San Beda College Alabang, Muntinlupa City, Metro Manila, Philippines.</p>
           <p>These Legal Terms constitute a legally binding agreement made between you, whether personally or on behalf of an entity ("you"), and Karl Divina and Kyle Sison, concerning your access to and use of the Services. You agree that by accessing the Services, you have read, understood, and agreed to be bound by all of these Legal Terms. IF YOU DO NOT AGREE WITH ALL OF THESE LEGAL TERMS, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING THE SERVICES AND YOU MUST DISCONTINUE USE IMMEDIATELY.</p>
@@ -85,12 +36,21 @@
     </div>
   </div>
 
-  <div class="footer">
-    <div class="container">
-      <p>&copy; 2023 Divina & Sison</p>
-      <a href="terms.php">Terms and Conditions</a>
-      <span class="mx-2">|</span>
-      <a href="privacy.php">Privacy Policy</a>
+  <div class="footer row d-flex justify-content-between" style="width: inherit; bottom: 0; position: fixed; margin-bottom: -1em;">
+    <div class="col-2">
+      <strong>
+        <p><a href="terms.php" style="text-decoration: none; color: white;">Terms and Conditions</a></p>
+      </strong>
+    </div>
+    <div class="col-8">
+      <strong>
+        <p>Divina & Sison &copy; 2023
+      </strong>
+    </div>
+    <div class="col-2">
+      <strong>
+        <p><a href="privacy.php" style="text-decoration: none; color: white;">Privacy Policy</a></p>
+      </strong>
     </div>
   </div>
 
