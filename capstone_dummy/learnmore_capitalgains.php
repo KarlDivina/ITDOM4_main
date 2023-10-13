@@ -24,17 +24,19 @@
     <div class="container my-2">
       <div class="card">
         <div class="card-body terms-and-conditions">
-          <h3 style="text-align: center;"><strong>Income Tax</strong></h3>
+          <h3 style="text-align: center;"><strong>Capital Gains Tax</strong></h3>
           <p>
-            Income tax is a type of tax we pay to our government from our earnings, or income. This can be calculated by first computing any deductions, such as payments to PhilHealth, SSS, and PagIBIG. Afterwards, we may apply the graduated income tax table to identify where in the tax bracket we would fall. Identifying our tax bracket allows us to apply the correct formula for calculating the amount of income tax we must apy to our government.
+            Capital Gains Tax is the tax imposed on the presumed gains to have been realized by the seller from a sale or exchange. This tax is applied the highest value of presumed gains, which may or may not be the same as the actual gains.
           </p>
-          <h4 style="text-align: center;"><strong>Deductions</strong></h4>
-          <h5><strong>PhilHealth</strong></h5>
-          <h5><strong>SSS</strong></h5>
-          <h5><strong>PagIBIG</strong></h5>
-          <h4 style="text-align: center;"><strong>Graduated Income Tax Table</strong></h4>
-          <h4 style="text-align: center;"><strong>Income Tax Calculation</strong></h4>
-
+          <h4 style="text-align: center;"><strong>Capital Gains Tax Calculation</strong></h4>
+          <h5><strong>CGT Base</strong></h5>
+          <p>First, identify what you will be using as your Capital Gains Tax Base, or CGT Base. This is the highest amount of presumed gains which you, as the seller, will realize from your sale. </p>
+          <h5><strong>TRAIN Law</strong></h5>
+          <p>Under TRAIN Law, the percentage which will be applied to calculate for Capital Gains Tax is 6%.</p>
+          <h5><strong>Computation</strong></h5>
+          <p>By multiplying your CGT Base with the current CGT Rate of 6%, you are able to calculate for the amount of Capital Gains Tax you must pay.</p>
+          <p>Ex. CGT Base = ₱3,000,000</p>
+          <p><u>CGT Base</u> (₱3,000,000) x <u>CGT Rate</u> (0.06) = <u>₱180,000 in Capital Gains Tax</u> from the sale.</p>
         </div>
       </div>
     </div>

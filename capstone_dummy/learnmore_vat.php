@@ -24,7 +24,7 @@
     <div class="container my-2">
       <div class="card">
         <div class="card-body terms-and-conditions">
-          <h3 style="text-align: center;"><strong>Income Tax</strong></h3>
+          <h3 style="text-align: center;"><strong>Value-Added Tax</strong></h3>
           <p>
             Income tax is a type of tax we pay to our government from our earnings, or income. This can be calculated by first computing any deductions, such as payments to PhilHealth, SSS, and PagIBIG. Afterwards, we may apply the graduated income tax table to identify where in the tax bracket we would fall. Identifying our tax bracket allows us to apply the correct formula for calculating the amount of income tax we must apy to our government.
           </p>
